@@ -1,0 +1,139 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", sans-serif;
+  --font-serif: "Playfair Display", serif;
+  
+  --animate-ray-sweep: ray-sweep 7s ease-in-out infinite;
+  --animate-ray-sweep-2: ray-sweep-2 5s ease-in-out infinite alternate;
+  --animate-core-pulse: core-pulse 3s ease-in-out infinite;
+  --animate-center-beam: center-beam 6s ease-in-out infinite;
+  
+  @keyframes ray-sweep { 
+    0%, 100% { transform: rotate(35deg) scaleY(1); opacity: 0.4; } 
+    50% { transform: rotate(30deg) scaleY(1.4); opacity: 0.8; } 
+  }
+  @keyframes ray-sweep-2 { 
+    0%, 100% { transform: rotate(25deg) translateY(0); opacity: 0.5; } 
+    50% { transform: rotate(28deg) translateY(3vh) scale(1.1); opacity: 1; } 
+  }
+  @keyframes core-pulse { 
+    0%, 100% { transform: rotate(25deg) scaleX(0.9); opacity: 0.4; } 
+    50% { transform: rotate(25deg) scaleX(1.1); opacity: 1; } 
+  }
+  @keyframes center-beam { 
+    0%, 100% { transform: scaleY(0.8) scaleX(1); opacity: 0.3; } 
+    50% { transform: scaleY(1.2) scaleX(1.1); opacity: 0.6; } 
+  }
+}
+
+@layer base {
+  body {
+    background-color: #050505;
+    color: white;
+    font-family: var(--font-sans);
+  }
+
+  /* Selection styling */
+  ::selection {
+    background: rgba(255, 255, 255, 0.15);
+  }
+
+  /* Autofill dark mode fix for form */
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover,
+  input:-webkit-autofill:focus,
+  textarea:-webkit-autofill,
+  textarea:-webkit-autofill:hover,
+  textarea:-webkit-autofill:focus {
+    -webkit-text-fill-color: white;
+    -webkit-box-shadow: 0 0 0px 1000px transparent inset;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
+
+/* Animate-in utility classes */
+@layer utilities {
+  .animate-in {
+    animation-fill-mode: both;
+  }
+  
+  .fade-in {
+    animation-name: fadeIn;
+  }
+  
+  .slide-in-from-bottom-2 {
+    --tw-enter-translate-y: 0.5rem;
+    animation-name: slideInFromBottom;
+  }
+
+  .slide-in-from-bottom-4 {
+    --tw-enter-translate-y: 1rem;
+    animation-name: slideInFromBottom;
+  }
+
+  .slide-in-from-bottom-6 {
+    --tw-enter-translate-y: 1.5rem;
+    animation-name: slideInFromBottom;
+  }
+  
+  .slide-in-from-right-4 {
+    --tw-enter-translate-x: 1rem;
+    animation-name: slideInFromRight;
+  }
+
+  .slide-in-from-right {
+    animation-name: slideInFromRight;
+  }
+
+  .duration-300 {
+    animation-duration: 300ms;
+  }
+
+  .duration-500 {
+    animation-duration: 500ms;
+  }
+
+  .duration-700 {
+    animation-duration: 700ms;
+  }
+
+  .duration-1000 {
+    animation-duration: 1000ms;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes slideInFromBottom {
+    from { 
+      opacity: 0;
+      transform: translateY(var(--tw-enter-translate-y, 0.5rem)); 
+    }
+    to { 
+      opacity: 1;
+      transform: translateY(0); 
+    }
+  }
+  
+  @keyframes slideInFromRight {
+    from { 
+      opacity: 0;
+      transform: translateX(var(--tw-enter-translate-x, 1rem)); 
+    }
+    to { 
+      opacity: 1;
+      transform: translateX(0); 
+    }
+  }
+}
