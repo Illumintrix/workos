@@ -54,7 +54,7 @@ export function DecisionsPage() {
           tags: extracted.tags || [],
           linkedTaskIds: [],
           linkedNoteIds: [],
-          sourceMessageId: 'manual',
+          sourceMessageId: null,
           aiConfidence: 'high',
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString()
@@ -111,13 +111,15 @@ export function DecisionsPage() {
                 </h1>
                 <p className="text-sm text-white/40 font-light mt-1 mb-4">{decisions.length} decisions logged</p>
               </div>
-              <button
-                onClick={() => setIsAddModalOpen(true)}
-                className="flex items-center gap-2 px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white text-xs font-medium rounded-lg transition-colors"
-              >
-                <Plus className="w-4 h-4" />
-                Log Decision
-              </button>
+              {decisions.length > 0 && (
+                <button
+                  onClick={() => setIsAddModalOpen(true)}
+                  className="flex items-center gap-2 px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white text-xs font-medium rounded-lg transition-colors"
+                >
+                  <Plus className="w-4 h-4" />
+                  Log Decision
+                </button>
+              )}
             </div>
 
             <div className="flex flex-wrap gap-2 mb-6">

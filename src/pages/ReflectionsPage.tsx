@@ -340,13 +340,15 @@ Mood Score: ${answers.moodScore}/10`;
             <p className="text-sm text-white/40 font-light mt-1">Reviewing your growth trajectory.</p>
           </div>
           
-          <button
-            onClick={() => setIsReflecting(true)}
-            className="flex items-center gap-2 px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white text-xs font-medium rounded-lg transition-colors border border-white/[0.05]"
-          >
-            <Sparkles className="w-4 h-4 text-purple-400/60" />
-            New Reflection
-          </button>
+          {reflections.length > 0 && (
+            <button
+              onClick={() => setIsReflecting(true)}
+              className="flex items-center gap-2 px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white text-xs font-medium rounded-lg transition-colors border border-white/[0.05]"
+            >
+              <Sparkles className="w-4 h-4 text-purple-400/60" />
+              New Reflection
+            </button>
+          )}
         </div>
 
         {reflections.length === 0 ? (

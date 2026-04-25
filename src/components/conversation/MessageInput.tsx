@@ -95,6 +95,20 @@ export function MessageInput({ onSend, isInitial }: MessageInputProps) {
     return () => window.removeEventListener('fill-chat-input', handleFillInput);
   }, []);
 
+  // Click outside to close menus
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (isProjectPickerOpen && !(e.target as Element).closest('.project-picker-container')) {
+        setIsProjectPickerOpen(false);
+      }
+      if (showMentions && !(e.target as Element).closest('.mentions-menu-container')) {
+        setShowMentions(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isProjectPickerOpen, showMentions]);
+
   // Cleanup recognition on unmount
   useEffect(() => {
     return () => {
@@ -310,11 +324,11 @@ export function MessageInput({ onSend, isInitial }: MessageInputProps) {
   );
 
   return (
-    <div className={`w-full max-w-4xl mx-auto ${isInitial ? 'px-4' : 'px-0'}`}>
+    <div className="w-full max-w-4xl mx-auto px-0">
       {/* Mention Menu */}
       {showMentions && (
         <div 
-          className="fixed z-[100] w-72 bg-[#0f0f0f]/95 backdrop-blur-2xl border border-white/[0.08] rounded-[24px] shadow-[0_24px_48px_-12px_rgba(0,0,0,0.6)] overflow-hidden p-2 animate-in fade-in zoom-in-95 duration-200"
+          className="fixed z-[100] w-72 bg-[#0f0f0f]/95 backdrop-blur-2xl border border-white/[0.08] rounded-[24px] shadow-[0_24px_48px_-12px_rgba(0,0,0,0.6)] overflow-hidden p-2 animate-in fade-in zoom-in-95 duration-200 mentions-menu-container"
           style={{ 
             top: `${mentionPosition.top}px`, 
             left: `${mentionPosition.left}px` 
@@ -336,7 +350,7 @@ export function MessageInput({ onSend, isInitial }: MessageInputProps) {
       )}
 
       <div
-        className={`relative flex items-end gap-3 rounded-2xl p-[1px] ${isInitial ? 'shadow-2xl' : ''}`}
+        className={`relative flex items-end gap-3 rounded-2xl p-[1px] ${isInitial ? 'shadow-[0_24px_48px_-12px_rgba(0,0,0,0.9)]' : ''}`}
         style={{
           background: isListening
             ? 'linear-gradient(180deg, rgba(239,68,68,0.3) 0%, rgba(239,68,68,0.05) 100%)'
@@ -345,16 +359,16 @@ export function MessageInput({ onSend, isInitial }: MessageInputProps) {
         }}
       >
         <div
-          className={`flex-1 flex flex-col gap-3 rounded-2xl bg-gradient-to-b from-[#161616] to-[#0e0e0e] ${isInitial ? 'p-6' : 'px-5 py-4'} relative`}
+          className={`flex-1 flex flex-col gap-3 rounded-2xl bg-gradient-to-b from-[#1a1a1a] to-[#0f0f0f] ${isInitial ? 'p-6' : 'px-5 py-4'} relative`}
           style={{
             boxShadow: isInitial 
-              ? 'inset 0 1px 1px rgba(255,255,255,0.06), inset 0 -2px 10px rgba(0,0,0,0.8), 0 30px 60px -15px rgba(0,0,0,0.9)'
-              : 'inset 0 1px 1px rgba(255,255,255,0.06), inset 0 -2px 8px rgba(0,0,0,0.5), 0 8px 24px -8px rgba(0,0,0,0.5)',
+              ? 'inset 0 1px 1px rgba(255,255,255,0.1), inset 0 -2px 6px rgba(0,0,0,0.8)'
+              : 'inset 0 1px 1px rgba(255,255,255,0.06), inset 0 -2px 8px rgba(0,0,0,0.5)',
           }}
         >
           {/* Noise texture */}
           <div
-            className="absolute inset-0 opacity-[0.02] pointer-events-none"
+            className="absolute inset-0 opacity-[0.03] pointer-events-none"
             style={{
               backgroundImage: 'radial-gradient(circle at center, #ffffff 1px, transparent 1px)',
               backgroundSize: '4px 4px',
@@ -413,8 +427,8 @@ export function MessageInput({ onSend, isInitial }: MessageInputProps) {
               onKeyUp={handleKeyUp}
               placeholder={isListening ? (isSpaceHeld ? 'Recording while Shift is held...' : 'Listening...') : (isInitial ? 'Tell me what\'s on your mind...' : 'Ask anything...')}
               disabled={isAIProcessing}
-              className={`w-full bg-transparent text-white/90 font-light placeholder:text-white/30 focus:outline-none resize-none leading-relaxed hide-scrollbar disabled:opacity-50 ${isInitial ? 'text-xl min-h-[96px]' : 'text-sm min-h-[32px]'}`}
-              style={{ textShadow: '0 1px 1px rgba(0,0,0,0.3)' }}
+              className={`w-full bg-transparent text-white/90 font-light placeholder:text-white/20 focus:outline-none resize-none leading-relaxed hide-scrollbar disabled:opacity-50 tracking-tight ${isInitial ? 'text-xl min-h-[96px]' : 'text-sm min-h-[32px]'}`}
+              style={{ textShadow: '0 1px 2px rgba(0,0,0,0.8)' }}
             />
 
             <div className="flex items-center justify-between mt-2">
@@ -428,7 +442,7 @@ export function MessageInput({ onSend, isInitial }: MessageInputProps) {
                 </button>
 
                 {/* Project Selector */}
-                <div className="relative">
+                <div className="relative project-picker-container">
                   <button
                     onClick={() => setIsProjectPickerOpen(!isProjectPickerOpen)}
                     className={`
@@ -439,7 +453,7 @@ export function MessageInput({ onSend, isInitial }: MessageInputProps) {
                     `}
                   >
                     <Folder className="w-3.5 h-3.5" />
-                    <span className="truncate max-w-[100px]">
+                    <span className="truncate max-w-[100px] tracking-tight">
                       {selectedProjectId 
                         ? projects.find(p => p.id === selectedProjectId)?.name 
                         : 'No Project'}
@@ -516,10 +530,10 @@ export function MessageInput({ onSend, isInitial }: MessageInputProps) {
                   className={`relative shrink-0 w-9 h-9 rounded-xl flex items-center justify-center transition-all duration-200 ${isAIProcessing ? 'bg-red-500/10 border border-red-500/20 text-red-400' : ''}`}
                   style={{
                     background: !isAIProcessing && input.trim()
-                      ? 'linear-gradient(180deg, #3a3a3a 0%, #1a1a1a 100%)'
+                      ? 'linear-gradient(180deg, #2e2e2e 0%, #141414 100%)'
                       : isAIProcessing ? '' : 'transparent',
                     boxShadow: !isAIProcessing && input.trim()
-                      ? 'inset 0 1px 1px rgba(255,255,255,0.15), 0 2px 6px rgba(0,0,0,0.4)'
+                      ? 'inset 0 2px 2px rgba(255,255,255,0.15), inset 0 -2px 8px rgba(0,0,0,0.8), 0 12px 24px -6px rgba(0,0,0,0.9)'
                       : 'none',
                     border: !isAIProcessing && input.trim()
                       ? '1px solid rgba(255,255,255,0.08)'
@@ -529,7 +543,7 @@ export function MessageInput({ onSend, isInitial }: MessageInputProps) {
                   {isAIProcessing ? (
                     <div className="w-3 h-3 bg-red-400 rounded-sm animate-pulse" />
                   ) : (
-                    <Send className="w-4 h-4 text-white/70" style={{ filter: 'drop-shadow(0 1px 1px rgba(0,0,0,0.5))' }} />
+                    <Send className="w-4 h-4 text-white/70" style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.9))' }} />
                   )}
                 </button>
               </div>

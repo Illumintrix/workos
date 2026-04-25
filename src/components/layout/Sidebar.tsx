@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { useAppStore } from '../../store';
 import {
@@ -18,10 +18,11 @@ import {
   User as UserIcon,
 } from 'lucide-react';
 import { SettingsModal } from '../settings/SettingsModal';
-import { ProjectTree } from './ProjectTree';
+import { ChatHistory } from './ChatHistory';
 
 const navItems = [
   { path: '/app', label: 'Home', icon: Home },
+  { path: '/projects', label: 'Projects', icon: Layers },
   { path: '/inbox', label: 'Inbox', icon: Inbox },
   { path: '/tasks', label: 'Tasks', icon: CheckSquare },
   { path: '/notes', label: 'Notes', icon: FileText },
@@ -29,14 +30,33 @@ const navItems = [
   { path: '/reflections', label: 'Reflections', icon: RefreshCw },
   { path: '/timeline', label: 'Timeline', icon: Clock },
   { path: '/portfolio', label: 'Portfolio', icon: Briefcase },
-  { path: '/search', label: 'Search', icon: Search },
 ];
 
 export function Sidebar() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { isSidebarCollapsed, toggleSidebar, settings, setSettingsOpen, isSettingsOpen, signOut, user } = useAppStore();
+  const { 
+    isSidebarCollapsed, 
+    toggleSidebar, 
+    settings, 
+    setSettingsOpen, 
+    isSettingsOpen, 
+    signOut, 
+    user,
+    setSearchModalOpen 
+  } = useAppStore();
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setSearchModalOpen(true);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [setSearchModalOpen]);
 
   return (
     <>
@@ -92,7 +112,25 @@ export function Sidebar() {
         </div>
 
         {/* Navigation */}
-        <nav className="relative z-10 flex-1 flex flex-col gap-1 px-3 py-4 overflow-y-auto hide-scrollbar">
+        <nav className="relative z-10 flex flex-col gap-1 px-3 py-4 overflow-y-auto hide-scrollbar">
+          {/* Search Button at the top */}
+          <button
+            onClick={() => setSearchModalOpen(true)}
+            className={`
+              flex items-center gap-3 w-full rounded-xl transition-all duration-200 mb-2
+              ${isSidebarCollapsed ? 'p-3 justify-center' : 'px-3 py-2.5'}
+              text-white/40 hover:text-white/70 hover:bg-white/[0.03] border border-transparent
+            `}
+          >
+            <Search className="w-[18px] h-[18px] shrink-0" />
+            {!isSidebarCollapsed && (
+              <div className="flex-1 flex items-center justify-between">
+                <span className="text-sm tracking-tight font-light">Search</span>
+                <span className="text-[10px] text-white/20 bg-white/5 px-1.5 py-0.5 rounded border border-white/5 font-mono">⌘ K</span>
+              </div>
+            )}
+          </button>
+
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
             const Icon = item.icon;
@@ -120,9 +158,9 @@ export function Sidebar() {
           })}
         </nav>
 
-        {/* Project Tree */}
-        <div className="flex-1 overflow-y-auto hide-scrollbar border-t border-white/[0.04]">
-          <ProjectTree isCollapsed={isSidebarCollapsed} />
+        {/* Chat History */}
+        <div className="flex-1 overflow-y-auto hide-scrollbar">
+          <ChatHistory isCollapsed={isSidebarCollapsed} />
         </div>
 
         {/* Bottom section — user + settings */}

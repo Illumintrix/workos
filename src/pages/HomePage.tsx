@@ -1,10 +1,15 @@
-
+import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { useAppStore } from '../store';
 import { ConversationArea } from '../components/conversation/ConversationArea';
 
 export function HomePage() {
+  const { id } = useParams();
+  const selectConversation = useAppStore(state => state.selectConversation);
 
-
-
+  useEffect(() => {
+    selectConversation(id || null);
+  }, [id, selectConversation]);
   return (
     <div className="flex-1 flex flex-col min-h-0 overflow-hidden relative">
       {/* Background ambient effect */}

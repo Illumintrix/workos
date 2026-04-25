@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import type { Task, Note, Decision, Reflection, TimelineEvent, Message, PortfolioItem, UserSettings, AIExtractions, InboxItem, Project } from './types';
+import type { Task, Note, Decision, Reflection, TimelineEvent, Message, PortfolioItem, UserSettings, AIExtractions, InboxItem, Project, Conversation } from './types';
 import { v4 as uuidv4 } from 'uuid';
 import { supabase } from '../lib/supabase';
 
@@ -18,6 +18,7 @@ interface AppState {
   settings: UserSettings;
   inbox: InboxItem[];
   projects: Project[];
+  conversations: Conversation[];
 
   // UI State
   rightPanelContent: AIExtractions | null;
@@ -31,6 +32,10 @@ interface AppState {
   user: any | null; // From Supabase
   isInitialized: boolean;
   isSettingsOpen: boolean;
+  isSearchModalOpen: boolean;
+  selectedConversationId: string | null;
+  chatSortOrder: 'recently_updated' | 'recently_created';
+  isChatBrowserOpen: boolean;
 
   // Actions
   setSettingsOpen: (open: boolean) => void;
@@ -75,6 +80,12 @@ interface AppState {
   addMessage: (message: Message) => Promise<void>;
   clearMessages: () => Promise<void>;
 
+  // Conversation Actions
+  addConversation: (title: string) => Promise<void>;
+  deleteConversation: (id: string) => Promise<void>;
+  selectConversation: (id: string | null) => void;
+  updateConversation: (id: string, updates: Partial<Conversation>) => Promise<void>;
+
   // Settings Actions
   updateSettings: (updates: Partial<UserSettings>) => Promise<void>;
 
@@ -91,6 +102,9 @@ interface AppState {
   clearPendingOpen: () => void;
   setUser: (user: any | null) => void;
   signOut: () => Promise<void>;
+  setSearchModalOpen: (open: boolean) => void;
+  setChatSortOrder: (order: 'recently_updated' | 'recently_created') => void;
+  setChatBrowserOpen: (open: boolean) => void;
 
   // Bulk action from AI extractions
   processExtractions: (extractions: AIExtractions, messageId: string) => Promise<void>;
@@ -120,10 +134,15 @@ export const useAppStore = create<AppState>()(
       timeline: [],
       portfolio: [],
       messages: [],
+      conversations: [],
       settings: defaultSettings,
       inbox: [],
       projects: [],
       isSettingsOpen: false,
+      isSearchModalOpen: false,
+      selectedConversationId: null,
+      chatSortOrder: 'recently_updated',
+      isChatBrowserOpen: false,
 
       // UI State
       rightPanelContent: null,
@@ -150,7 +169,8 @@ export const useAppStore = create<AppState>()(
             messagesRes,
             settingsRes,
             projectsRes,
-            inboxRes
+            inboxRes,
+            conversationsRes
           ] = await Promise.all([
             supabase.from('tasks').select('*').eq('user_id', user.id).order('created_at', { ascending: false }),
             supabase.from('notes').select('*').eq('user_id', user.id).order('created_at', { ascending: false }),
@@ -161,7 +181,8 @@ export const useAppStore = create<AppState>()(
             supabase.from('messages').select('*').eq('user_id', user.id).order('timestamp', { ascending: true }),
             supabase.from('settings').select('*').eq('user_id', user.id).maybeSingle(),
             supabase.from('projects').select('*').eq('user_id', user.id).order('created_at', { ascending: true }),
-            supabase.from('inbox').select('*').eq('user_id', user.id).order('created_at', { ascending: false })
+            supabase.from('inbox').select('*').eq('user_id', user.id).order('created_at', { ascending: false }),
+            supabase.from('conversations').select('*').eq('user_id', user.id).order('last_message_at', { ascending: false })
           ]);
 
           // Log errors
@@ -259,6 +280,7 @@ export const useAppStore = create<AppState>()(
               role: m.role,
               content: m.content,
               extractions: m.extractions,
+              conversationId: m.conversation_id,
               timestamp: m.timestamp
             })),
             settings: settingsRes.data ? {
@@ -283,6 +305,12 @@ export const useAppStore = create<AppState>()(
               type: i.type,
               item: i.item,
               createdAt: i.created_at
+            })),
+            conversations: (conversationsRes.data || []).map(c => ({
+              id: c.id,
+              title: c.title,
+              lastMessageAt: c.last_message_at,
+              createdAt: c.created_at
             })),
           });
         } catch (error) {
@@ -723,16 +751,85 @@ export const useAppStore = create<AppState>()(
           role: message.role,
           content: message.content,
           extractions: message.extractions,
+          conversation_id: message.conversationId || get().selectedConversationId,
           timestamp: message.timestamp
         }]);
 
         if (error) console.error('Error adding message to Supabase:', error);
+
+        // Update conversation last_message_at
+        const convId = message.conversationId || get().selectedConversationId;
+        if (convId) {
+          await get().updateConversation(convId, { lastMessageAt: message.timestamp });
+        }
       },
 
       clearMessages: async () => {
-        set({ messages: [] });
-        const { error } = await supabase.from('messages').delete().eq('user_id', get().user?.id);
-        if (error) console.error('Error clearing messages in Supabase:', error);
+        const convId = get().selectedConversationId;
+        if (convId) {
+          set((state) => ({
+            messages: state.messages.filter(m => m.conversationId !== convId)
+          }));
+          const { error } = await supabase.from('messages').delete().eq('conversation_id', convId);
+          if (error) console.error('Error clearing messages for conversation:', error);
+        } else {
+          set({ messages: [] });
+          const { error } = await supabase.from('messages').delete().eq('user_id', get().user?.id);
+          if (error) console.error('Error clearing all messages:', error);
+        }
+      },
+
+      addConversation: async (title) => {
+        const conversation: Conversation = {
+          id: uuidv4(),
+          title,
+          lastMessageAt: new Date().toISOString(),
+          createdAt: new Date().toISOString(),
+        };
+
+        set((state) => ({
+          conversations: [conversation, ...state.conversations],
+          selectedConversationId: conversation.id,
+        }));
+
+        const { error } = await supabase.from('conversations').insert([{
+          id: conversation.id,
+          user_id: get().user?.id,
+          title: conversation.title,
+          last_message_at: conversation.lastMessageAt,
+          created_at: conversation.createdAt,
+        }]);
+
+        if (error) console.error('Error adding conversation to Supabase:', error);
+      },
+
+      deleteConversation: async (id) => {
+        set((state) => ({
+          conversations: state.conversations.filter(c => c.id !== id),
+          selectedConversationId: state.selectedConversationId === id ? null : state.selectedConversationId,
+          messages: state.messages.filter(m => m.conversationId !== id)
+        }));
+
+        const { error: mError } = await supabase.from('messages').delete().eq('conversation_id', id);
+        const { error: cError } = await supabase.from('conversations').delete().eq('id', id);
+
+        if (mError) console.error('Error deleting messages for conversation:', mError);
+        if (cError) console.error('Error deleting conversation:', cError);
+      },
+
+      selectConversation: (id) => set({ selectedConversationId: id }),
+
+      updateConversation: async (id, updates) => {
+        set((state) => ({
+          conversations: state.conversations.map(c => c.id === id ? { ...c, ...updates } : c)
+        }));
+
+        const dbUpdates: any = {};
+        if (updates.title !== undefined) dbUpdates.title = updates.title;
+        if (updates.lastMessageAt !== undefined) dbUpdates.last_message_at = updates.lastMessageAt;
+
+        const { error } = await supabase.from('conversations').update(dbUpdates).eq('id', id);
+        if (error) console.error('Error updating conversation:', error);
       },
 
       // ─── Settings Actions ──────────────────────────────────────────
@@ -799,6 +896,10 @@ export const useAppStore = create<AppState>()(
         set((state) => ({
           isRightPanelOpen: open !== undefined ? open : !state.isRightPanelOpen,
         })),
+
+      setSearchModalOpen: (open) => set({ isSearchModalOpen: open }),
+      setChatSortOrder: (order) => set({ chatSortOrder: order }),
+      setChatBrowserOpen: (open) => set({ isChatBrowserOpen: open }),
 
       toggleSidebar: () =>
         set((state) => ({

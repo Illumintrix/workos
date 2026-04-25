@@ -11,9 +11,9 @@ import { DecisionsPage } from './pages/DecisionsPage';
 import { ReflectionsPage } from './pages/ReflectionsPage';
 import { TimelinePage } from './pages/TimelinePage';
 import { PortfolioPage } from './pages/PortfolioPage';
-import { SearchPage } from './pages/SearchPage';
 import { LandingPage } from './pages/LandingPage';
 import { AuthPage } from './pages/AuthPage';
+import { ProjectsPage } from './pages/ProjectsPage';
 import { supabase } from './lib/supabase';
 
 function App() {
@@ -84,6 +84,7 @@ function App() {
         {/* Protected Application Routes */}
         <Route element={user ? <AppLayout /> : <Navigate to="/" replace />}>
           <Route path="/app" element={<HomePage />} />
+          <Route path="/chat/:id" element={<HomePage />} />
           <Route path="/inbox" element={<InboxPage />} />
           <Route path="/tasks" element={<TasksPage />} />
           <Route path="/notes" element={<NotesPage />} />
@@ -91,7 +92,7 @@ function App() {
           <Route path="/reflections" element={<ReflectionsPage />} />
           <Route path="/timeline" element={<TimelinePage />} />
           <Route path="/portfolio" element={<PortfolioPage />} />
-          <Route path="/search" element={<SearchPage />} />
+          <Route path="/projects" element={<ProjectsPage />} />
           <Route path="*" element={<Navigate to="/app" replace />} />
         </Route>
       </Routes>

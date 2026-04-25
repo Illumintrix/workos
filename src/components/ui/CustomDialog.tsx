@@ -1,3 +1,4 @@
+import { createPortal } from 'react-dom';
 import { AlertTriangle, Info, CheckCircle2 } from 'lucide-react';
 
 interface CustomDialogProps {
@@ -46,10 +47,10 @@ export function CustomDialog({
     danger: 'bg-red-500 text-white hover:bg-red-600'
   };
 
-  return (
-    <div className="fixed inset-0 z-[500] flex items-center justify-center p-4 bg-black/40 backdrop-blur-[2px] animate-in fade-in duration-300">
+  return createPortal(
+    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
       <div 
-        className="w-full max-w-lg bg-[#0a0a0a]/80 border border-white/[0.08] rounded-[40px] overflow-hidden shadow-2xl backdrop-blur-2xl animate-in zoom-in-95 duration-300 p-2"
+        className="w-full max-w-lg bg-[#0a0a0a] border border-white/[0.08] rounded-[40px] overflow-hidden shadow-2xl animate-in zoom-in-95 duration-300 p-2"
         style={{ boxShadow: '0 32px 64px -16px rgba(0,0,0,0.8)' }}
       >
         <div className="flex flex-col sm:flex-row items-center gap-6 p-6 sm:p-8">
@@ -94,6 +95,7 @@ export function CustomDialog({
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

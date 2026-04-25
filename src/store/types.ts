@@ -99,7 +99,15 @@ export interface Message {
   role: 'user' | 'assistant';
   content: string;
   extractions?: AIExtractions;
+  conversationId?: string;
   timestamp: string;
+}
+
+export interface Conversation {
+  id: string;
+  title: string;
+  lastMessageAt: string;
+  createdAt: string;
 }
 
 export interface AIExtractions {

@@ -64,7 +64,7 @@ export function NotesPage() {
           tags: extracted.tags || [],
           linkedTaskIds: [],
           linkedDecisionIds: [],
-          sourceMessageId: '',
+          sourceMessageId: null,
           projectId: extracted.projectId || null,
           aiConfidence: 'high',
           createdAt: new Date().toISOString(),
@@ -118,13 +118,15 @@ export function NotesPage() {
                 </h1>
                 <p className="text-sm text-white/40 font-light mt-1 mb-4">{notes.length} notes across {allCategories.length} categories</p>
               </div>
-              <button
-                onClick={() => setIsAddModalOpen(true)}
-                className="flex items-center gap-2 px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white text-xs font-medium rounded-lg transition-colors"
-              >
-                <Plus className="w-4 h-4" />
-                Add Note
-              </button>
+              {notes.length > 0 && (
+                <button
+                  onClick={() => setIsAddModalOpen(true)}
+                  className="flex items-center gap-2 px-3 py-1.5 bg-white/10 hover:bg-white/20 text-white text-xs font-medium rounded-lg transition-colors"
+                >
+                  <Plus className="w-4 h-4" />
+                  Add Note
+                </button>
+              )}
             </div>
 
             <div className="flex flex-wrap gap-2 mb-8">

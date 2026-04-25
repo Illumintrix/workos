@@ -4,6 +4,8 @@ import { RightPanel } from './RightPanel';
 import { AmbientBackground } from '../AmbientBackground';
 import { useAppStore } from '../../store';
 import { Menu } from 'lucide-react';
+import { SearchModal } from '../search/SearchModal';
+import { ChatBrowser } from '../conversation/ChatBrowser';
 
 export function AppLayout() {
   const { toggleSidebar } = useAppStore();
@@ -11,10 +13,11 @@ export function AppLayout() {
   return (
     <div className="relative min-h-screen text-white antialiased font-sans bg-[#050505]">
       <AmbientBackground />
-
+      <SearchModal />
       <div className="relative z-10 flex h-screen overflow-hidden">
         {/* Zone 1: Left Sidebar */}
         <Sidebar />
+        <ChatBrowser />
 
         {/* Mobile hamburger */}
         <button
