@@ -1,73 +1,69 @@
-# React + TypeScript + Vite
+# Vela Intelligence OS
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Vela is a premium, AI-driven Work Intelligence OS designed for high-performance individuals. It centralizes tasks, notes, decisions, and reflections into a unified, high-fidelity experience with a focus on minimalist design and intelligent context linking.
 
-Currently, two official plugins are available:
+![Vela UI](https://github.com/Illumintrix/workos/raw/main/src/assets/hero.png)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## ✨ Features
 
-## React Compiler
+- **🧠 Intelligent Extraction**: Chat naturally with Vela to capture tasks, notes, and decisions. Our AI engine automatically extracts structured data from your conversation.
+- **✅ Unified Task Management**: A powerful Kanban and List view for managing your work, integrated with project contexts.
+- **📝 Contextual Notes**: Capture insights and link them directly to projects, tasks, or decisions.
+- **⚖️ Decision Journal**: Preserve your reasoning and tradeoffs for every critical decision you make.
+- **🔄 Smart Reflections**: Weekly and daily reflection wizards that summarize your achievements and provide actionable adjustments.
+- **💼 Portfolio Engine**: Automatically generate project highlights and impact statements for your professional portfolio.
+- **📥 Review Inbox**: A staging area for AI-extracted items, giving you full control over what enters your OS.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🎨 Design Philosophy
 
-## Expanding the ESLint configuration
+Vela is built with a **Premium Minimalist** aesthetic:
+- **Glassmorphism**: Subtle transparency and backdrop blurs for a modern, sophisticated feel.
+- **HSL-Based Theme**: A curated, harmonious dark theme optimized for focus.
+- **Micro-animations**: Smooth transitions and hover effects using Framer Motion and Tailwind CSS.
+- **Responsive Layout**: Seamless experience across mobile, tablet, and desktop.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🛠️ Tech Stack
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **Frontend**: [React](https://reactjs.org/) + [TypeScript](https://www.typescriptlang.org/)
+- **Build Tool**: [Vite](https://vitejs.dev/)
+- **Styling**: [Tailwind CSS](https://tailwindcss.com/)
+- **Icons**: [Lucide React](https://lucide.dev/)
+- **State Management**: [Zustand](https://github.com/pmndrs/zustand)
+- **Backend**: [Supabase](https://supabase.com/) (Auth, Database, Real-time)
+- **AI Integration**: Custom LLM orchestration for extraction and summarization.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+## 🚀 Getting Started
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### Prerequisites
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- Node.js (v18 or higher)
+- A Supabase account and project
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### Installation
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Illumintrix/workos.git
+   cd workos
+   ```
+
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+
+3. Set up environment variables:
+   Create a `.env` file in the root directory:
+   ```env
+   VITE_SUPABASE_URL=your_supabase_url
+   VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+   ```
+
+4. Run the development server:
+   ```bash
+   npm run dev
+   ```
+
+## 📄 License
+
+Proprietary. All rights reserved by Illumintrix.
