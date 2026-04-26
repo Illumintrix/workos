@@ -144,14 +144,14 @@ export function ConversationArea() {
         className="flex-1 overflow-y-auto min-h-0 hide-scrollbar px-6 sm:px-10 lg:px-16 py-10"
       >
         {showEmptyState ? (
-          <div className="max-w-4xl w-full mx-auto flex flex-col pt-24 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+          <div className="max-w-4xl w-full mx-auto flex flex-col pt-12 animate-in fade-in slide-in-from-bottom-4 duration-1000">
             {/* Greeting */}
             <h1 className="text-4xl sm:text-5xl font-light text-white tracking-tight mb-12" style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>
               {getGreeting()}, <span className="font-semibold">{settings.name ? settings.name.split(' ')[0] : 'Rahul'}.</span>
             </h1>
 
             {/* Input Section */}
-            <div className="w-full mb-20">
+            <div className="w-full mb-8">
                {recentConversation && (
                  <Link 
                    to={`/chat/${recentConversation.id}`}

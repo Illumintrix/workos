@@ -16,18 +16,39 @@ export function TodayTasks({ onAddTask, onTaskClick }: TodayTasksProps) {
   const navigate = useNavigate();
   const [completingTasks, setCompletingTasks] = useState<Set<string>>(new Set());
   
-  const today = new Date().toISOString().split('T')[0];
-  
-  const todayTasks = tasks.filter((t) => {
-    // Show tasks that are not marked completed in store
-    // We NO LONGER filter out tasks that are in the completingTasks set here,
-    // so they stay visible during the buffer period.
-    return t.status !== 'completed' && t.dueDate && t.dueDate <= today;
+  const activeTasks = tasks.filter((t) => {
+    return t.status !== 'completed';
+  });
+
+  if (activeTasks.length === 0) return null;
+
+  const priorityOrder = { high: 0, medium: 1, low: 2 };
+
+  const sortedTasks = [...activeTasks].sort((a, b) => {
+    // 1. Handle due date presence
+    if (a.dueDate && !b.dueDate) return -1;
+    if (!a.dueDate && b.dueDate) return 1;
+    
+    // 2. Sort by due date if both exist
+    if (a.dueDate && b.dueDate) {
+      if (a.dueDate < b.dueDate) return -1;
+      if (a.dueDate > b.dueDate) return 1;
+    }
+    
+    // 3. Finally sort by priority
+    return priorityOrder[a.priority] - priorityOrder[b.priority];
   });
 
   const toggleTaskCompletion = (taskId: string, currentStatus: TaskStatus) => {
-    if (currentStatus === 'completed') {
-      updateTask(taskId, { status: 'to_do' });
+    if (currentStatus === 'completed' || completingTasks.has(taskId)) {
+      setCompletingTasks(prev => {
+        const next = new Set(prev);
+        next.delete(taskId);
+        return next;
+      });
+      if (currentStatus === 'completed') {
+        updateTask(taskId, { status: 'to_do' });
+      }
     } else {
       setCompletingTasks(prev => {
         const next = new Set(prev);
@@ -49,23 +70,13 @@ export function TodayTasks({ onAddTask, onTaskClick }: TodayTasksProps) {
     }
   };
 
-  if (todayTasks.length === 0) return null;
-
-  const priorityOrder = { high: 0, medium: 1, low: 2 };
-
-  const sortedTasks = [...todayTasks].sort((a, b) => {
-    if (a.dueDate! < b.dueDate!) return -1;
-    if (a.dueDate! > b.dueDate!) return 1;
-    return priorityOrder[a.priority] - priorityOrder[b.priority];
-  });
-
   return (
-    <div className="mt-12 w-full max-w-4xl mx-auto">
+    <div className="mt-4 w-full max-w-4xl mx-auto">
       <div className="flex items-center justify-between mb-8 px-1">
         <div className="flex items-center gap-3">
           <h3 className="text-base font-medium text-white/80 tracking-tight">Tasks</h3>
           <span className="text-[10px] text-white/20 font-medium px-1.5 py-0.5 rounded-md bg-white/[0.03] border border-white/[0.05]">
-            {todayTasks.length}
+            {activeTasks.length}
           </span>
         </div>
         <div className="flex items-center gap-4">
