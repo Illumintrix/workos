@@ -6,33 +6,44 @@ import { Icon } from '@iconify/react';
 import { AmbientBackground } from '../components/AmbientBackground';
 
 export function AuthPage() {
-  const [isLogin, setIsLogin] = useState(true);
+  const [authMode, setAuthMode] = useState<'login' | 'signup' | 'forgot'>('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
   const navigate = useNavigate();
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
+    setMessage(null);
 
     try {
-      if (isLogin) {
+      if (authMode === 'login') {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-      } else {
-        const { error } = await supabase.auth.signUp({ email, password });
+        navigate('/');
+      } else if (authMode === 'signup') {
+        const { error } = await supabase.auth.signUp({ 
+          email, 
+          password,
+          options: {
+            emailRedirectTo: window.location.origin,
+          }
+        });
         if (error) throw error;
-        // Supabase signup might require email confirmation depending on settings
-        setError("Please check your email for confirmation link.");
-        setLoading(false);
-        return;
+        setMessage("Check your email for a confirmation link.");
+      } else if (authMode === 'forgot') {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/auth?type=recovery`,
+        });
+        if (error) throw error;
+        setMessage("Password reset link sent to your email.");
       }
-      navigate('/');
     } catch (err: any) {
-      setError(err.message || 'An error occurred during authentication');
+      setError(err.message || 'An error occurred');
     } finally {
       setLoading(false);
     }
@@ -54,10 +65,10 @@ export function AuthPage() {
             <Layers className="text-white w-6 h-6" />
           </div>
           <h1 className="text-2xl font-normal tracking-tight text-white mb-2">
-            {isLogin ? 'Welcome back to Vela' : 'Join Vela'}
+            {authMode === 'login' ? 'Welcome back to Vela' : authMode === 'signup' ? 'Join Vela' : 'Reset Password'}
           </h1>
           <p className="text-sm text-white/40 font-light">
-            {isLogin ? 'Enter your credentials to access your workspace.' : 'Your work, navigated.'}
+            {authMode === 'login' ? 'Enter your credentials to access your workspace.' : authMode === 'signup' ? 'Your work, navigated.' : 'We\'ll send a reset link to your email.'}
           </p>
         </div>
 
@@ -84,32 +95,46 @@ export function AuthPage() {
                   </div>
                 </div>
 
-                <div>
-                  <div className="flex items-center justify-between mb-2">
-                    <label className="text-xs text-white/40 font-light uppercase tracking-widest block">Password</label>
-                    {isLogin && (
-                      <button type="button" className="text-[10px] text-white/20 hover:text-white/40 transition-colors">Forgot password?</button>
-                    )}
-                  </div>
-                  <div className="relative group">
-                    <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <Lock className="h-4 w-4 text-white/20 group-focus-within:text-white/60 transition-colors" />
+                {authMode !== 'forgot' && (
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="text-xs text-white/40 font-light uppercase tracking-widest block">Password</label>
+                      {authMode === 'login' && (
+                        <button 
+                          type="button" 
+                          onClick={() => setAuthMode('forgot')}
+                          className="text-[10px] text-white/20 hover:text-white/40 transition-colors"
+                        >
+                          Forgot password?
+                        </button>
+                      )}
                     </div>
-                    <input
-                      type="password"
-                      required
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      className="block w-full pl-11 pr-4 py-3 bg-[#0a0a0a] border border-white/[0.05] rounded-xl text-sm text-white placeholder:text-white/10 focus:outline-none focus:ring-1 focus:ring-white/20 focus:border-white/20 transition-all"
-                      placeholder="••••••••"
-                    />
+                    <div className="relative group">
+                      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <Lock className="h-4 w-4 text-white/20 group-focus-within:text-white/60 transition-colors" />
+                      </div>
+                      <input
+                        type="password"
+                        required
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        className="block w-full pl-11 pr-4 py-3 bg-[#0a0a0a] border border-white/[0.05] rounded-xl text-sm text-white placeholder:text-white/10 focus:outline-none focus:ring-1 focus:ring-white/20 focus:border-white/20 transition-all"
+                        placeholder="••••••••"
+                      />
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
 
               {error && (
-                <div className="p-3 rounded-lg bg-red-500/5 border border-red-500/20 text-red-400 text-xs font-light">
+                <div className="p-3 rounded-xl bg-red-500/5 border border-red-500/10 text-red-400 text-xs font-light animate-in fade-in zoom-in-95 duration-200">
                   {error}
+                </div>
+              )}
+
+              {message && (
+                <div className="p-3 rounded-xl bg-emerald-500/5 border border-emerald-500/10 text-emerald-400 text-xs font-light animate-in fade-in zoom-in-95 duration-200">
+                  {message}
                 </div>
               )}
 
@@ -124,44 +149,59 @@ export function AuthPage() {
                     <Loader2 className="w-4 h-4 text-white animate-spin" />
                   ) : (
                     <>
-                      <span className="text-sm font-normal tracking-wide text-white">{isLogin ? 'Sign In' : 'Create Account'}</span>
+                      <span className="text-sm font-normal tracking-wide text-white">
+                        {authMode === 'login' ? 'Sign In' : authMode === 'signup' ? 'Create Account' : 'Send Reset Link'}
+                      </span>
                       <ArrowRight className="w-4 h-4 text-white/80 group-hover:translate-x-1 transition-transform" />
                     </>
                   )}
                 </div>
               </button>
 
-              <div className="relative flex items-center justify-center my-6">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-white/[0.05]"></div>
-                </div>
-                <span className="relative px-4 text-[10px] text-white/20 uppercase tracking-widest bg-[#0c0c0c]">or continue with</span>
-              </div>
+              {authMode !== 'forgot' && (
+                <>
+                  <div className="relative flex items-center justify-center my-6">
+                    <div className="absolute inset-0 flex items-center">
+                      <div className="w-full border-t border-white/[0.05]"></div>
+                    </div>
+                    <span className="relative px-4 text-[10px] text-white/20 uppercase tracking-widest bg-[#0c0c0c]">or continue with</span>
+                  </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                <button type="button" className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#0a0a0a] border border-white/[0.05] hover:bg-white/[0.02] transition-all text-xs font-light text-white/60">
-                  <Icon icon="mdi:github" className="w-4 h-4" />
-                  GitHub
-                </button>
-                <button type="button" className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#0a0a0a] border border-white/[0.05] hover:bg-white/[0.02] transition-all text-xs font-light text-white/60">
-                  <Icon icon="mdi:google" className="w-4 h-4" />
-                  Google
-                </button>
-              </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <button type="button" className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#0a0a0a] border border-white/[0.05] hover:bg-white/[0.02] transition-all text-xs font-light text-white/60">
+                      <Icon icon="mdi:github" className="w-4 h-4" />
+                      GitHub
+                    </button>
+                    <button type="button" className="flex items-center justify-center gap-2 py-2.5 rounded-xl bg-[#0a0a0a] border border-white/[0.05] hover:bg-white/[0.02] transition-all text-xs font-light text-white/60">
+                      <Icon icon="mdi:google" className="w-4 h-4" />
+                      Google
+                    </button>
+                  </div>
+                </>
+              )}
             </form>
           </div>
         </div>
 
         <div className="mt-8 text-center">
-          <button
-            onClick={() => setIsLogin(!isLogin)}
-            className="text-sm font-light text-white/40 hover:text-white/60 transition-colors"
-          >
-            {isLogin ? "Don't have an account? " : "Already part of Vela? "}
-            <span className="text-white border-b border-white/20 pb-0.5 hover:border-white/60 transition-colors ml-1">
-              {isLogin ? 'Create one now' : 'Sign in instead'}
-            </span>
-          </button>
+          {authMode === 'forgot' ? (
+            <button
+              onClick={() => setAuthMode('login')}
+              className="text-sm font-light text-white/40 hover:text-white/60 transition-colors"
+            >
+              Back to <span className="text-white border-b border-white/20 pb-0.5 ml-1">Sign in</span>
+            </button>
+          ) : (
+            <button
+              onClick={() => setAuthMode(authMode === 'login' ? 'signup' : 'login')}
+              className="text-sm font-light text-white/40 hover:text-white/60 transition-colors"
+            >
+              {authMode === 'login' ? "Don't have an account? " : "Already part of Vela? "}
+              <span className="text-white border-b border-white/20 pb-0.5 hover:border-white/60 transition-colors ml-1">
+                {authMode === 'login' ? 'Create one now' : 'Sign in instead'}
+              </span>
+            </button>
+          )}
         </div>
       </div>
     </div>
