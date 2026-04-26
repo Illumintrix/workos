@@ -70,23 +70,23 @@ export function ApiKeyPromptModal() {
           }}
         >
           <Sparkles className="w-3 h-3 text-white/60" />
-          <span className="text-[9px] font-normal text-white/70 tracking-[0.2em] uppercase">Intelligence Activation</span>
+          <span className="text-[9px] font-normal text-white/70 tracking-[0.2em] uppercase">Quick Setup</span>
         </div>
         
         <h3 
           className="text-2xl font-normal text-white mb-3 tracking-tight z-10 relative"
           style={{ textShadow: '0 1px 2px rgba(0,0,0,0.8)' }}
         >
-          Connect OpenRouter
+          Enable AI Features
         </h3>
         <p className="text-sm text-white/40 font-light mb-10 leading-relaxed z-10 relative">
-          Vela requires an intelligence channel to structure your natural language. It's free to initialize and powers all automated synthesis.
+          To use the AI chat and automated task features, you just need a free API key from OpenRouter. It's quick and free to set up.
         </p>
 
         <div className="space-y-8 z-10 relative">
           {/* Step 1: External Link Card */}
           <div className="space-y-3">
-            <label className="text-[10px] font-medium text-white/20 uppercase tracking-[0.2em] ml-1">1. Generate Protocol</label>
+            <label className="text-[10px] font-medium text-white/20 uppercase tracking-[0.2em] ml-1">1. Get your free key</label>
             <a 
               href="https://openrouter.ai/keys" 
               target="_blank" 
@@ -102,8 +102,8 @@ export function ApiKeyPromptModal() {
                     <ExternalLink className="w-4 h-4 text-white/40" />
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-sm text-white/80 font-light tracking-tight">OpenRouter.ai/keys</span>
-                    <span className="text-[10px] text-green-500/60 font-normal">Free credits usually available</span>
+                    <span className="text-sm text-white/80 font-light tracking-tight">Visit OpenRouter.ai/keys</span>
+                    <span className="text-[10px] text-green-500/60 font-normal">Takes less than a minute</span>
                   </div>
                 </div>
                 <ChevronRight className="w-4 h-4 text-white/10 group-hover:text-white/40 group-hover:translate-x-1 transition-all" />
@@ -113,21 +113,21 @@ export function ApiKeyPromptModal() {
 
           {/* Step 2: Input Field */}
           <div className="space-y-3">
-            <label className="text-[10px] font-medium text-white/20 uppercase tracking-[0.2em] ml-1">2. Configuration</label>
+            <label className="text-[10px] font-medium text-white/20 uppercase tracking-[0.2em] ml-1">2. Enter your key</label>
             <div className="relative group">
               <div className="absolute -inset-0.5 bg-gradient-to-b from-white/[0.05] to-transparent rounded-2xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-500" />
               <input 
                 type="password" 
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
-                placeholder="sk-or-v1-..."
+                placeholder="Paste your API key here..."
                 className="relative w-full bg-black/40 border border-white/[0.05] rounded-2xl p-5 pr-14 text-white text-sm focus:outline-none focus:border-white/20 shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)] transition-all placeholder:text-white/10 font-mono"
               />
               <Key className={`absolute right-6 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors ${isValid ? 'text-blue-400/40' : 'text-white/5'}`} />
             </div>
             <p className="text-[10px] text-white/20 font-light ml-1 flex items-center gap-2">
               <Check className="w-3 h-3 text-green-500/40" />
-              Keys are stored locally and never shared with our servers.
+              Your key is stored safely on your device.
             </p>
           </div>
         </div>
@@ -137,7 +137,7 @@ export function ApiKeyPromptModal() {
             onClick={() => setApiKeyModalOpen(false)}
             className="text-[10px] font-medium uppercase tracking-[0.2em] text-white/30 hover:text-white transition-colors"
           >
-            Later
+            Cancel
           </button>
           <button
             onClick={handleSave}
@@ -154,7 +154,7 @@ export function ApiKeyPromptModal() {
             ) : (
               <Sparkles className="w-4 h-4 text-white/80 group-hover:rotate-12 transition-transform" />
             )}
-            {isSaving ? 'Initializing...' : isSuccess ? 'Activated' : 'Activate Intelligence'}
+            {isSaving ? 'Saving...' : isSuccess ? 'Success' : 'Save and Start'}
           </button>
         </div>
       </div>
