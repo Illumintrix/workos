@@ -1,4 +1,4 @@
-import { Lock, Plus, Layers, CheckSquare, Calendar, TrendingUp, Sparkles, FileText, GitBranch, LayoutDashboard, MessageSquare, Search, Home, Inbox, Clock, Briefcase, History, Send, Folder, AudioLines, RefreshCw } from 'lucide-react';
+import { Lock, Plus, Layers, CheckSquare, FileText, GitBranch, Search, Home, Inbox, Clock, Briefcase, History, Send, Folder, AudioLines, RefreshCw } from 'lucide-react';
 
 export function Features() {
   return (

@@ -1,7 +1,7 @@
 import { Navbar } from '../components/Navbar';
 import { Footer } from '../components/Footer';
 import { AmbientBackground } from '../components/AmbientBackground';
-import { BookOpen, ArrowRight, Sparkles } from 'lucide-react';
+import { BookOpen, ArrowRight } from 'lucide-react';
 
 export function BlogPage() {
   const posts = [
