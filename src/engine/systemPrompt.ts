@@ -97,7 +97,7 @@ ${decisionContext}
   "extractions": {
     "tasks": [
       {
-        "id": "Use EXACT ID for updates, otherwise omit",
+        "id": "Use EXACT UUID for updates, otherwise leave out completely. NEVER generate dummy IDs like 'task-1'.",
         "title": "Task title",
         "description": "Details",
         "dueDate": "YYYY-MM-DD",
@@ -111,7 +111,7 @@ ${decisionContext}
     ], 
     "notes": [
       {
-        "id": "Use EXACT ID for updates, otherwise omit",
+        "id": "Use EXACT UUID for updates, otherwise leave out completely. NEVER generate dummy IDs.",
         "title": "Note title",
         "content": "Full content",
         "category": "Topic",
@@ -123,7 +123,7 @@ ${decisionContext}
     ], 
     "decisions": [
       {
-        "id": "Use EXACT ID for updates, otherwise omit",
+        "id": "Use EXACT UUID for updates, otherwise leave out completely. NEVER generate dummy IDs.",
         "title": "Decision title",
         "reasoning": "Why",
         "alternatives": ["Choice 1"],

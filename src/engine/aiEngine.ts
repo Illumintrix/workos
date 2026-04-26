@@ -107,11 +107,13 @@ export async function sendMessageToAI(
     const aiResponse = parseAIResponse(raw);
 
     const now = new Date().toISOString();
+    const isValidUUID = (id: string) => /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id);
+
     const extractions: AIExtractions = {
       tasks: aiResponse.extractions.tasks
         .filter((t) => t.title && t.title.trim().length > 0)
         .map((t) => ({
-          id: t.id || uuidv4(),
+          id: (t.id && isValidUUID(t.id)) ? t.id : uuidv4(),
           title: t.title,
           description: t.description || '',
           status: t.status || 'to_do',
@@ -129,7 +131,7 @@ export async function sendMessageToAI(
       notes: aiResponse.extractions.notes
         .filter((n) => n.title && n.title.trim().length > 0)
         .map((n) => ({
-          id: n.id || uuidv4(),
+          id: (n.id && isValidUUID(n.id)) ? n.id : uuidv4(),
           title: n.title,
           content: n.content || '',
           category: n.category || 'General',
@@ -145,7 +147,7 @@ export async function sendMessageToAI(
       decisions: aiResponse.extractions.decisions
         .filter((d) => d.title && d.title.trim().length > 0)
         .map((d) => ({
-          id: d.id || uuidv4(),
+          id: (d.id && isValidUUID(d.id)) ? d.id : uuidv4(),
           title: d.title,
           reasoning: d.reasoning || '',
           alternatives: d.alternatives || [],
