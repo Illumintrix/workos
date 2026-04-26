@@ -24,7 +24,7 @@ export function Navbar() {
           }}
         ></div>
 
-        <div className="flex items-center gap-3 relative z-10">
+        <Link to="/" className="flex items-center gap-3 relative z-10 hover:opacity-80 transition-opacity">
           <div
             className="w-8 h-8 rounded-full bg-gradient-to-b from-[#333] to-[#111] flex items-center justify-center border border-black"
             style={{
@@ -39,30 +39,30 @@ export function Navbar() {
           >
             VELA
           </span>
-        </div>
+        </Link>
 
         <nav className="hidden md:flex items-center gap-8 relative z-10">
-          <a
-            href="#features"
+          <Link
+            to="/#features"
             className="text-sm font-light text-white/70 hover:text-white transition-colors"
             style={{ textShadow: '0 1px 2px rgba(0,0,0,0.8)' }}
           >
             Features
-          </a>
-          <a
-            href="#architecture"
+          </Link>
+          <Link
+            to="/#architecture"
             className="text-sm font-light text-white/70 hover:text-white transition-colors"
             style={{ textShadow: '0 1px 2px rgba(0,0,0,0.8)' }}
           >
-            Architecture
-          </a>
-          <a
-            href="#impact"
+            How it Works
+          </Link>
+          <Link
+            to="/#impact"
             className="text-sm font-light text-white/70 hover:text-white transition-colors"
             style={{ textShadow: '0 1px 2px rgba(0,0,0,0.8)' }}
           >
             Impact
-          </a>
+          </Link>
         </nav>
 
         <div className="flex items-center gap-4 relative z-10">

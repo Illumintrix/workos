@@ -13,21 +13,21 @@ export function CTA() {
       <div className="max-w-3xl text-center flex flex-col items-center relative z-10">
         <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-8 border border-white/[0.05] bg-white/[0.02] backdrop-blur-md">
           <Sparkles className="w-4 h-4 text-white/60" />
-          <span className="text-xs font-normal text-white/60 tracking-wide uppercase">Join the Elite</span>
+          <span className="text-xs font-normal text-white/60 tracking-wide uppercase">Get Started</span>
         </div>
         <h2 
           className="text-4xl sm:text-5xl lg:text-7xl font-normal tracking-tight leading-[1.05] text-white mb-8" 
           style={{ textShadow: '0 4px 8px rgba(0,0,0,0.6)' }}
         >
-          Ready to automate your
+          Ready to transform how you
           <br />
-          <span className="italic font-light text-white/90 font-serif">— entire workflow?</span>
+          <span className="italic font-light text-white/90 font-serif">— work?</span>
         </h2>
         <p 
           className="text-sm sm:text-base text-white/50 max-w-md leading-relaxed font-light mb-12" 
           style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}
         >
-          Experience the future of work today. Vela is the first autonomous workspace that understands you.
+          Experience a simpler way to manage your professional life. Vela is the smart workspace that helps you grow.
         </p>
         
         <div className="flex flex-col sm:flex-row items-center gap-4">
@@ -52,7 +52,7 @@ export function CTA() {
                 className="text-sm font-normal tracking-wide relative z-10"
                 style={{ textShadow: '0 1px 2px rgba(0,0,0,0.8)' }}
               >
-                Initialize Workspace
+                Launch Workspace
               </span>
               <Rocket
                 className="w-4 h-4 text-white/90 relative z-10 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1"

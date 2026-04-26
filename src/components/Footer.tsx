@@ -1,5 +1,6 @@
 import { Layers } from 'lucide-react';
 import { Icon } from '@iconify/react';
+import { Link } from 'react-router-dom';
 
 export function Footer() {
   return (
@@ -23,7 +24,7 @@ export function Footer() {
               <span className="text-base font-normal text-white tracking-tight">VELA</span>
             </div>
             <p className="text-xs text-white/40 font-light leading-relaxed max-w-xs mb-8">
-              Autonomous professional intelligence for elite individuals. Navigate your work, capture your impact, and build your career memory.
+              The smart workspace for elite individuals. Navigate your work, capture your impact, and build your career history.
             </p>
             <div className="flex items-center gap-4">
               <a href="#" className="w-8 h-8 rounded-full border border-white/[0.05] bg-white/[0.02] flex items-center justify-center text-white/50 hover:text-white hover:bg-white/[0.05] transition-all">
@@ -40,27 +41,27 @@ export function Footer() {
           
           <div className="flex flex-col gap-4">
             <h4 className="text-sm font-normal text-white mb-2">Product</h4>
-            <a href="#" className="text-xs text-white/50 hover:text-white transition-colors font-light tracking-wide">Features</a>
+            <a href="#features" className="text-xs text-white/50 hover:text-white transition-colors font-light tracking-wide">Features</a>
             <a href="#" className="text-xs text-white/50 hover:text-white transition-colors font-light tracking-wide">Integrations</a>
             <a href="#" className="text-xs text-white/50 hover:text-white transition-colors font-light tracking-wide">Pricing</a>
-            <a href="#" className="text-xs text-white/50 hover:text-white transition-colors font-light tracking-wide flex items-center gap-2">
+            <Link to="/changelog" className="text-xs text-white/50 hover:text-white transition-colors font-light tracking-wide flex items-center gap-2">
               Changelog
               <span className="px-1.5 py-0.5 rounded-sm bg-white/10 text-[10px] text-white/80">New</span>
-            </a>
+            </Link>
           </div>
 
           <div className="flex flex-col gap-4">
             <h4 className="text-sm font-normal text-white mb-2">Company</h4>
-            <a href="#" className="text-xs text-white/50 hover:text-white transition-colors font-light tracking-wide">About Us</a>
+            <Link to="/about" className="text-xs text-white/50 hover:text-white transition-colors font-light tracking-wide">About Us</Link>
             <a href="#" className="text-xs text-white/50 hover:text-white transition-colors font-light tracking-wide">Careers</a>
-            <a href="#" className="text-xs text-white/50 hover:text-white transition-colors font-light tracking-wide">Blog</a>
+            <Link to="/blog" className="text-xs text-white/50 hover:text-white transition-colors font-light tracking-wide">Blog</Link>
             <a href="#" className="text-xs text-white/50 hover:text-white transition-colors font-light tracking-wide">Contact</a>
           </div>
 
           <div className="flex flex-col gap-4">
             <h4 className="text-sm font-normal text-white mb-2">Legal</h4>
-            <a href="#" className="text-xs text-white/50 hover:text-white transition-colors font-light tracking-wide">Privacy Policy</a>
-            <a href="#" className="text-xs text-white/50 hover:text-white transition-colors font-light tracking-wide">Terms of Service</a>
+            <Link to="/privacy" className="text-xs text-white/50 hover:text-white transition-colors font-light tracking-wide">Privacy Policy</Link>
+            <Link to="/terms" className="text-xs text-white/50 hover:text-white transition-colors font-light tracking-wide">Terms of Service</Link>
             <a href="#" className="text-xs text-white/50 hover:text-white transition-colors font-light tracking-wide">Security</a>
             <a href="#" className="text-xs text-white/50 hover:text-white transition-colors font-light tracking-wide flex items-center gap-2">
               System Status

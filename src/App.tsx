@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import ScrollToTop from './components/ScrollToTop';
 import { Loader2 } from 'lucide-react';
 import { useAppStore } from './store';
 import { AppLayout } from './components/layout/AppLayout';
@@ -14,6 +15,11 @@ import { PortfolioPage } from './pages/PortfolioPage';
 import { LandingPage } from './pages/LandingPage';
 import { AuthPage } from './pages/AuthPage';
 import { ProjectsPage } from './pages/ProjectsPage';
+import { ChangelogPage } from './pages/ChangelogPage';
+import { BlogPage } from './pages/BlogPage';
+import { AboutPage } from './pages/AboutPage';
+import { PrivacyPage } from './pages/PrivacyPage';
+import { TermsPage } from './pages/TermsPage';
 import { supabase } from './lib/supabase';
 
 function App() {
@@ -71,6 +77,7 @@ function App() {
 
   return (
     <BrowserRouter>
+      <ScrollToTop />
       <Routes>
         {/* Auth & Landing */}
         <Route path="/auth" element={<AuthPage />} />
@@ -80,6 +87,11 @@ function App() {
           path="/" 
           element={user ? <Navigate to="/app" replace /> : <LandingPage />} 
         />
+        <Route path="/changelog" element={<ChangelogPage />} />
+        <Route path="/blog" element={<BlogPage />} />
+        <Route path="/about" element={<AboutPage />} />
+        <Route path="/privacy" element={<PrivacyPage />} />
+        <Route path="/terms" element={<TermsPage />} />
 
         {/* Protected Application Routes */}
         <Route element={user ? <AppLayout /> : <Navigate to="/" replace />}>

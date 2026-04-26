@@ -25,7 +25,7 @@ export function Hero() {
               className="text-xs font-normal text-white/90 tracking-wide uppercase relative z-10"
               style={{ textShadow: '0 1px 1px rgba(0,0,0,0.8)' }}
             >
-              Intelligence OS
+              Free Forever — Bring your own AI Key
             </span>
         </div>
         <h1
@@ -34,13 +34,13 @@ export function Hero() {
         >
           Your work, organized.
           <br />
-          <span className="italic font-light text-white/90 font-serif">— by pure intelligence.</span>
+          <span className="italic font-light text-white/90 font-serif">— by pure simplicity.</span>
         </h1>
         <p
           className="text-sm sm:text-base text-white/60 max-w-sm leading-relaxed font-light animate-in fade-in slide-in-from-bottom-6 duration-1000"
           style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}
         >
-          Stop managing tools. Start doing your best work. Vela listens to your natural language and instantly structures your tasks, notes, and career memory.
+          Stop managing tools. Start doing your best work. Vela is a completely free workspace that manages your tasks, notes, and professional history. Just bring your own AI key, and let the system handle the rest.
         </p>
         <div className="mt-10 relative inline-flex group">
           <div className="absolute inset-0 rounded-full p-[1px] bg-gradient-to-b from-white/40 via-white/10 to-transparent opacity-90 group-hover:opacity-100 transition-opacity"></div>
@@ -62,7 +62,7 @@ export function Hero() {
               className="text-sm font-normal tracking-wide relative z-10"
               style={{ textShadow: '0 1px 2px rgba(0,0,0,0.9)' }}
             >
-              Initialize Workspace
+              Launch Workspace
             </span>
             <Rocket className="w-4 h-4 text-white/90 relative z-10" style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.9))' }} />
           </RouterLink>

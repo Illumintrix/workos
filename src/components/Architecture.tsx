@@ -10,15 +10,15 @@ export function Architecture() {
             className="text-3xl sm:text-4xl lg:text-5xl font-normal tracking-tight leading-[1.1] text-white mb-6 animate-in fade-in slide-in-from-bottom-4 duration-1000"
             style={{ textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}
           >
-            Streamline your
+            Manage your work.
             <br />
-            <span className="italic font-light text-white/90 font-serif">— career intelligence.</span>
+            <span className="italic font-light text-white/90 font-serif">— grow your career.</span>
           </h2>
           <p
             className="text-sm sm:text-base text-white/60 max-w-lg leading-relaxed font-light animate-in fade-in slide-in-from-bottom-6 duration-1000"
             style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}
           >
-            A holistic approach to work management. Vela automatically synthesizes your daily actions into a high-fidelity narrative of your professional growth.
+            A simple way to keep track of everything you do. Vela automatically organizes your daily actions into a complete history of your professional growth.
           </p>
         </div>
 
@@ -46,10 +46,10 @@ export function Architecture() {
                     className="text-lg md:text-xl font-normal tracking-tight text-white mb-2"
                     style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}
                   >
-                    Start Your Synthesis
+                    Everything in one place.
                   </h3>
                   <p className="text-sm text-white/50 font-light leading-relaxed">
-                    Automatically link tasks, notes, and decisions into a unified brain.
+                    Keep your tasks, notes, and big decisions in one organized workspace.
                   </p>
                 </div>
 
@@ -166,14 +166,14 @@ export function Architecture() {
                         <h4 className="text-xs sm:text-sm font-medium text-[#111] truncate tracking-tight">Extracted Today</h4>
                         <span className="text-xs text-[#888] shrink-0 font-light">Just now</span>
                       </div>
-                      <p className="text-xs text-[#666] leading-[1.3] truncate font-light">Vela identified a new decision in your notes.</p>
+                      <p className="text-xs text-[#666] leading-[1.3] truncate font-light">Vela saved a new decision from your project sync.</p>
                     </div>
                   </div>
                 </div>
                 <div className="mt-4">
-                  <h3 className="text-sm font-normal text-white mb-2">Memory Synthesis</h3>
+                  <h3 className="text-sm font-normal text-white mb-2">Smart Timeline</h3>
                   <p className="text-xs text-white/40 leading-relaxed font-light">
-                    Vela automatically connects dots across your timeline to generate a living history of your work.
+                    Vela automatically organizes your work history so you can see your progress at a glance.
                   </p>
                 </div>
               </div>
@@ -219,9 +219,9 @@ export function Architecture() {
                   />
                 </div>
                 <div>
-                  <h3 className="text-sm font-normal text-white mb-2">Impact Resumé</h3>
+                  <h3 className="text-sm font-normal text-white mb-2">Work History</h3>
                   <p className="text-xs text-white/40 leading-relaxed font-light">
-                    Your achievements are distilled into professional narratives, ready for your next career move.
+                    Your achievements are saved automatically, making your next promotion or job move effortless.
                   </p>
                 </div>
               </div>
@@ -251,10 +251,10 @@ export function Architecture() {
                     className="text-lg md:text-xl font-normal tracking-tight text-white mb-2"
                     style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}
                   >
-                    Autonomous Synthesis
+                    Automatic Organization
                   </h3>
                   <p className="text-sm text-white/50 font-light leading-relaxed">
-                    Vela works in the background to co-relate data and update your graph without friction.
+                    Vela works in the background to organize your data so you can focus on doing the work.
                   </p>
                 </div>
 
@@ -304,7 +304,7 @@ export function Architecture() {
                           boxShadow: 'inset 0 1px 1px rgba(255,255,255,0.3), 0 4px 10px rgba(0,0,0,0.4)',
                         }}
                       >
-                        AI Extraction
+                        AI Organizing
                       </div>
                     </div>
 
@@ -332,7 +332,7 @@ export function Architecture() {
                           boxShadow: 'inset 0 1px 1px rgba(255,255,255,0.3), 0 4px 10px rgba(0,0,0,0.4)',
                         }}
                       >
-                        Synthesis Engine
+                        Smart Workspace
                       </div>
                     </div>
 
@@ -417,7 +417,7 @@ export function Architecture() {
                  </div>
                  <div className="p-6 md:p-8 flex-1 flex flex-col justify-end relative z-10">
                      <h3 className="text-lg md:text-xl font-normal tracking-tight text-white mb-2" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}>State Synchronization</h3>
-                     <p className="text-sm text-white/50 font-light leading-relaxed">Real-time bi-directional data flow ensures every client represents the absolute source of truth without manual refresh.</p>
+                     <p className="text-sm text-white/50 font-light leading-relaxed">Your data stays in sync across all your devices instantly, without you ever having to hit refresh.</p>
                  </div>
               </div>
            </div>
@@ -454,7 +454,7 @@ export function Architecture() {
                  </div>
                  <div className="p-6 md:p-8 flex-1 flex flex-col justify-end relative z-10">
                      <h3 className="text-lg md:text-xl font-normal tracking-tight text-white mb-2" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}>Zero-Trust Security</h3>
-                     <p className="text-sm text-white/50 font-light leading-relaxed">Enterprise-grade encryption at rest and in transit. Your intellectual property and workflow data remains entirely yours.</p>
+                     <p className="text-sm text-white/50 font-light leading-relaxed">Bank-level encryption to keep your work and private data safe. Your work history belongs to you alone.</p>
                  </div>
               </div>
            </div>
@@ -491,7 +491,7 @@ export function Architecture() {
                  </div>
                  <div className="p-6 md:p-8 flex-1 flex flex-col justify-end relative z-10">
                      <h3 className="text-lg md:text-xl font-normal tracking-tight text-white mb-2" style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}>Global Scalability</h3>
-                     <p className="text-sm text-white/50 font-light leading-relaxed">Built on edge-computing principles to guarantee sub-50ms latency regardless of team volume or geographic dispersion.</p>
+                     <p className="text-sm text-white/50 font-light leading-relaxed">Built for speed, so you can work without waiting for things to load, no matter how large your workspace grows.</p>
                  </div>
               </div>
            </div>

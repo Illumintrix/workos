@@ -1,4 +1,4 @@
-import { Lock, Plus, Layers, CheckSquare, Calendar, MoreHorizontal, TrendingUp, Sparkles, FileText, GitBranch, LayoutDashboard, MessageSquare } from 'lucide-react';
+import { Lock, Plus, Layers, CheckSquare, Calendar, TrendingUp, Sparkles, FileText, GitBranch, LayoutDashboard, MessageSquare, Search, Home, Inbox, Clock, Briefcase, History, Send, Folder, AudioLines, RefreshCw } from 'lucide-react';
 
 export function Features() {
   return (
@@ -10,179 +10,181 @@ export function Features() {
         >
           Capture everything.
           <br />
-          <span className="italic text-white/90 font-serif">— recall anything.</span>
+          <span className="italic text-white/90 font-serif">— forget nothing.</span>
         </h2>
         <p
           className="text-sm sm:text-base text-white/60 max-w-lg leading-relaxed font-light"
           style={{ textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}
         >
-          An autonomous brain for your career. Vela transforms your raw thoughts and meetings into a structured knowledge graph that evolves with you.
+          The smart workspace for your professional life. Vela turns your raw thoughts and meetings into a clear record of your progress that grows with you.
         </p>
       </div>
 
       <div
-        className="group transition-transform duration-700 hover:-translate-y-2 bg-gradient-to-b from-[#1e1e1e] to-[#121212] w-full max-w-[1400px] rounded-[2rem] mr-auto ml-auto p-[1px] relative"
-        style={{ boxShadow: '0 24px 48px -12px rgba(0,0,0,0.9)' }}
+        className="group transition-transform duration-700 hover:-translate-y-2 bg-gradient-to-b from-[#1e1e1e] to-[#121212] w-full max-w-[1400px] rounded-[2.5rem] mr-auto ml-auto p-[1px] relative shadow-[0_40px_80px_-20px_rgba(0,0,0,0.9)]"
       >
-        <div className="absolute inset-0 rounded-[2rem] bg-gradient-to-b from-white/10 to-transparent opacity-50 pointer-events-none"></div>
+        <div className="absolute inset-0 rounded-[2.5rem] bg-gradient-to-b from-white/10 to-transparent opacity-50 pointer-events-none"></div>
         <div
-          className="overflow-hidden flex flex-col bg-gradient-to-b from-[#1a1a1a] to-[#0f0f0f] w-full rounded-[2rem] relative"
-          style={{ boxShadow: 'inset 0 1px 1px rgba(255,255,255,0.1), inset 0 -2px 6px rgba(0,0,0,0.8)' }}
+          className="overflow-hidden flex flex-col bg-[#050505] w-full rounded-[2.5rem] relative shadow-[inset_0_1px_1px_rgba(255,255,255,0.05)]"
         >
-          <div
-            className="absolute inset-0 opacity-[0.03] pointer-events-none"
-            style={{ backgroundImage: 'radial-gradient(circle at center, #ffffff 1px, transparent 1px)', backgroundSize: '4px 4px' }}
-          ></div>
-
           {/* Browser Header */}
-          <div className="border-white/[0.04] flex z-20 bg-[#0a0a0a]/50 h-12 border-b px-4 relative backdrop-blur-md items-center shadow-sm">
-             <div className="flex gap-1.5 w-20">
-               <div className="w-2.5 h-2.5 rounded-full bg-[#ef4444]" style={{ boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.3)' }}></div>
-               <div className="w-2.5 h-2.5 rounded-full bg-[#f59e0b]" style={{ boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.3)' }}></div>
-               <div className="w-2.5 h-2.5 rounded-full bg-[#22c55e]" style={{ boxShadow: 'inset 0 1px 2px rgba(255,255,255,0.3)' }}></div>
+          <div className="border-white/[0.04] flex z-20 bg-[#0a0a0a]/80 h-11 border-b px-4 relative backdrop-blur-xl items-center">
+             <div className="flex gap-2 w-20">
+               <div className="w-3 h-3 rounded-full bg-[#ff5f57]" style={{ boxShadow: 'inset 0 1px 1px rgba(255,255,255,0.2)' }}></div>
+               <div className="w-3 h-3 rounded-full bg-[#febc2e]" style={{ boxShadow: 'inset 0 1px 1px rgba(255,255,255,0.2)' }}></div>
+               <div className="w-3 h-3 rounded-full bg-[#28c840]" style={{ boxShadow: 'inset 0 1px 1px rgba(255,255,255,0.2)' }}></div>
              </div>
-             <div className="mx-auto px-6 py-1.5 rounded-full bg-white/[0.02] border border-white/[0.05] text-xs text-white/40 flex items-center gap-2 font-light tracking-wide shadow-inner">
-               <Lock className="w-3 h-3 text-white/50" />
+             <div className="mx-auto px-5 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.05] text-[10px] text-white/20 flex items-center gap-2 font-light tracking-wide">
+               <Lock className="w-2.5 h-2.5 text-white/20" />
                <span>vela.app</span>
              </div>
              <div className="w-20 flex justify-end">
-               <Plus className="w-4 h-4 text-white/40" />
+               <Plus className="w-3.5 h-3.5 text-white/20" />
              </div>
           </div>
 
-          <div className="flex h-[800px] relative z-10">
-            {/* Sidebar */}
-            <div className="hidden md:flex border-white/[0.04] flex-col gap-6 z-20 bg-[#0a0a0a]/30 backdrop-blur-md w-64 border-r p-5 relative">
-              <div className="flex items-center gap-3 px-2">
-                <div
-                  className="w-8 h-8 rounded-lg bg-gradient-to-b from-[#333] to-[#111] flex items-center justify-center text-white border border-[#333]"
-                  style={{ boxShadow: 'inset 0 1px 1px rgba(255,255,255,0.2), 0 2px 4px rgba(0,0,0,0.5)' }}
-                >
+          <div className="flex h-[760px] relative z-10">
+            {/* Sidebar - Design System Inspired Mockup */}
+            <div className="hidden md:flex flex-col z-20 bg-[#0a0a0a]/60 backdrop-blur-md w-60 border-r border-white/[0.04] relative">
+              <div className="flex items-center gap-2.5 h-[60px] px-5 border-b border-white/[0.04]">
+                <div className="w-7 h-7 rounded-lg bg-gradient-to-b from-[#333] to-[#111] flex items-center justify-center text-white border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)]">
                   <Layers className="w-4 h-4" />
                 </div>
-                <span className="text-white text-sm font-normal tracking-tight">Intelligence OS</span>
+                <span className="text-white text-[13px] font-normal tracking-tight">Vela</span>
               </div>
 
-                <div className="flex flex-col gap-1 mt-2">
-                  {[
-                    { label: 'Today', icon: LayoutDashboard },
-                    { label: 'Inbox', icon: MessageSquare },
-                    { label: 'Tasks', icon: CheckSquare },
-                    { label: 'Notes', icon: FileText },
-                    { label: 'Decisions', icon: GitBranch },
-                    { label: 'Reflections', icon: Sparkles },
-                    { label: 'Timeline', icon: Calendar },
-                    { label: 'Portfolio', icon: TrendingUp },
-                  ].map((item, idx) => (
-                    <div 
-                      key={item.label}
-                      className={`flex items-center justify-between px-3 py-2 rounded-lg text-sm cursor-pointer font-light transition-all ${idx === 0 ? 'bg-white/[0.05] text-white border border-white/[0.05]' : 'text-white/50 hover:bg-white/[0.02] hover:text-white'}`}
-                      style={idx === 0 ? { boxShadow: 'inset 0 1px 1px rgba(255,255,255,0.05)' } : {}}
-                    >
-                      <div className="flex items-center gap-3">
-                        <item.icon className="w-4 h-4 text-white/70" />
-                        {item.label}
-                      </div>
-                    </div>
-                  ))}
+              <div className="px-3 pt-4 pb-2 flex gap-2">
+                <div className="flex-1 flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/[0.06] text-white/30 text-[11px] font-medium tracking-tight">
+                  <Layers className="w-3 h-3" />
+                  Projects
                 </div>
+                <div className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-white/[0.04] border border-white/[0.06] text-white/30 text-[10px] font-mono">
+                  <Search className="w-3 h-3" />
+                  <span className="opacity-50">⌘K</span>
+                </div>
+              </div>
 
-              <div className="mt-auto pt-5 border-t border-white/[0.04]">
-                <div className="flex items-center gap-3 px-2">
-                  <img
-                    src="https://images.unsplash.com/photo-1724525647065-f948fc102e68?w=150&q=80"
-                    alt="User"
-                    className="w-8 h-8 rounded-full object-cover border border-white/10 shadow-sm"
-                  />
-                  <div className="flex flex-col">
-                    <span className="text-sm text-white font-normal tracking-tight">Rahul</span>
-                    <span className="text-xs text-white/50 font-light mt-0.5">Knowledge Architect</span>
+              <nav className="flex flex-col gap-0.5 px-3 pt-2">
+                {[
+                  { label: 'Home', icon: Home, active: true },
+                  { label: 'Inbox', icon: Inbox },
+                  { label: 'Tasks', icon: CheckSquare },
+                  { label: 'Notes', icon: FileText },
+                  { label: 'Decisions', icon: GitBranch },
+                  { label: 'Reflections', icon: RefreshCw },
+                  { label: 'Timeline', icon: Clock },
+                  { label: 'Portfolio', icon: Briefcase },
+                ].map((item) => (
+                  <div 
+                    key={item.label}
+                    className={`flex items-center gap-3 px-3 py-2 rounded-xl text-sm transition-all ${item.active ? 'bg-gradient-to-b from-white/[0.08] to-white/[0.02] text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] border border-white/[0.05]' : 'text-white/40 hover:text-white/70 hover:bg-white/[0.02]'}`}
+                  >
+                    <item.icon className={`w-4 h-4 ${item.active ? 'text-white' : ''}`} />
+                    <span className="tracking-tight font-light">{item.label}</span>
                   </div>
-                  <button className="ml-auto text-white/40 hover:text-white transition-colors">
-                    <MoreHorizontal className="w-4 h-4" />
-                  </button>
+                ))}
+              </nav>
+
+              <div className="mt-6 px-5 py-2">
+                <span className="text-[10px] text-white/20 uppercase tracking-[0.2em] font-medium">Recent Streams</span>
+              </div>
+              <div className="px-3 space-y-0.5">
+                {['Synthesizing roadmap...', 'Quarterly review prep', 'New design system specs'].map((chat, i) => (
+                  <div key={i} className="px-3 py-2 text-xs text-white/30 font-light truncate hover:bg-white/5 rounded-lg cursor-pointer">
+                    {chat}
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-auto p-4 border-t border-white/[0.04]">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-b from-[#555] to-[#222] border border-white/10 shadow-[inset_0_1px_1px_rgba(255,255,255,0.2)] overflow-hidden flex items-center justify-center text-[10px] text-white/40">
+                    JD
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-xs text-white font-medium">John Doe</span>
+                    <span className="text-[9px] text-white/30">Lead Architect</span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* Main Content Area */}
-            <div className="flex-1 bg-transparent p-6 md:p-8 overflow-y-auto relative hide-scrollbar">
-              {/* Header */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 relative z-10 gap-4">
-                <div>
-                  <div className="flex items-center gap-3 mb-1">
-                    <h3 className="text-xl md:text-2xl text-white font-normal tracking-tight shadow-sm">My Feed</h3>
-                    <span className="px-2.5 py-1 rounded-full border border-white/[0.05] bg-gradient-to-b from-[#2a2a2a] to-[#1a1a1a] text-xs text-white/70" style={{ boxShadow: 'inset 0 1px 1px rgba(255,255,255,0.05)' }}>Active</span>
-                  </div>
-                  <p className="text-sm text-white/50 font-light drop-shadow-sm">Tracking 14 entities in your career memory</p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <button className="px-4 py-2 text-xs text-white bg-gradient-to-b from-[#3a3a3a] to-[#1a1a1a] hover:from-[#444] hover:to-[#222] rounded-lg border border-white/[0.1] transition-colors font-light flex items-center gap-2 shadow-lg" style={{ boxShadow: 'inset 0 1px 1px rgba(255,255,255,0.1), 0 2px 4px rgba(0,0,0,0.5)' }}>
-                    <Sparkles className="w-3.5 h-3.5" />
-                    Synthesize Impact
-                  </button>
-                </div>
-              </div>
+            {/* Main Content Area - Mockup Content */}
+            <div className="flex-1 bg-transparent overflow-y-auto relative hide-scrollbar">
+              <div className="max-w-4xl mx-auto px-8 pt-16 pb-20">
+                {/* Large Greeting */}
+                <h1 className="text-5xl font-light text-white tracking-tight mb-10 leading-tight">
+                  Good morning, <span className="font-semibold">John.</span>
+                </h1>
 
-              {/* Feed Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 relative z-10">
-                {/* Decision Card */}
-                <div className="p-5 rounded-2xl bg-gradient-to-b from-[#2a2a2a] to-[#1a1a1a] border border-white/[0.05] group hover:border-white/10 transition-all" style={{ boxShadow: 'inset 0 1px 1px rgba(255,255,255,0.05), 0 4px 12px rgba(0,0,0,0.3)' }}>
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-lg bg-indigo-500/20 flex items-center justify-center border border-indigo-500/30">
-                        <GitBranch className="w-3.5 h-3.5 text-indigo-400" />
-                      </div>
-                      <span className="text-xs text-white/70 font-medium">Decision Extracted</span>
-                    </div>
-                    <span className="text-[10px] text-white/30">Just now</span>
-                  </div>
-                  <h4 className="text-sm text-white font-normal mb-2 tracking-tight">Migrate to Supabase for Auth</h4>
-                  <p className="text-xs text-white/50 font-light leading-relaxed mb-4">Automatically identified from #engineering-sync. Linked to 4 related tasks and 2 technical risks.</p>
-                  <div className="flex items-center gap-2 pt-4 border-t border-white/[0.03]">
-                    <div className="px-2 py-0.5 rounded-md bg-white/[0.03] border border-white/[0.05] text-[10px] text-white/40">#infrastructure</div>
-                    <div className="px-2 py-0.5 rounded-md bg-white/[0.03] border border-white/[0.05] text-[10px] text-white/40">#security</div>
+                {/* Recent Chat Pill */}
+                <div className="inline-flex items-center gap-2.5 bg-white/[0.03] border border-white/[0.05] px-3.5 py-2 rounded-full mb-6 cursor-pointer hover:bg-white/[0.06] transition-all">
+                  <History className="w-3.5 h-3.5 text-white/30" />
+                  <div className="flex items-center gap-2 text-[11px]">
+                    <span className="text-white/30 font-medium">Recent Memory</span>
+                    <span className="text-white/10">•</span>
+                    <span className="text-white/70 font-medium">Architecture review for Q3...</span>
                   </div>
                 </div>
 
-                {/* Task Card */}
-                <div className="p-5 rounded-2xl bg-gradient-to-b from-[#2a2a2a] to-[#1a1a1a] border border-white/[0.05] group hover:border-white/10 transition-all" style={{ boxShadow: 'inset 0 1px 1px rgba(255,255,255,0.05), 0 4px 12px rgba(0,0,0,0.3)' }}>
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-lg bg-emerald-500/20 flex items-center justify-center border border-emerald-500/30">
-                        <CheckSquare className="w-3.5 h-3.5 text-emerald-400" />
+                {/* Message Input Box */}
+                <div 
+                  className="w-full rounded-2xl p-[1px] bg-gradient-to-b from-white/[0.08] to-white/[0.02] shadow-[0_24px_48px_-12px_rgba(0,0,0,0.9)] mb-12"
+                >
+                  <div 
+                    className="relative w-full h-44 rounded-2xl bg-gradient-to-b from-[#1a1a1a] to-[#0f0f0f] p-6 shadow-[inset_0_1px_1px_rgba(255,255,255,0.1),inset_0_-2px_6px_rgba(0,0,0,0.8)] overflow-hidden"
+                  >
+                    <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle at center, #ffffff 1px, transparent 1px)', backgroundSize: '4px 4px' }} />
+                    <span className="text-lg text-white/20 font-light tracking-tight">Capture your progress...</span>
+                    
+                    <div className="absolute bottom-6 left-6 right-6 flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full flex items-center justify-center text-white/20 hover:text-white/40 bg-white/5 border border-white/5">
+                           <Plus className="w-4 h-4" />
+                        </div>
+                        <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/[0.06] text-white/30 text-[10px] font-medium">
+                           <Folder className="w-3 h-3" />
+                           Design System
+                        </div>
                       </div>
-                      <span className="text-xs text-white/70 font-medium">Task Spawned</span>
-                    </div>
-                    <span className="text-[10px] text-white/30">10:15 AM</span>
-                  </div>
-                  <h4 className="text-sm text-white font-normal mb-2 tracking-tight">Implement Edge Function Caching</h4>
-                  <p className="text-xs text-white/50 font-light leading-relaxed mb-4">Critical path task extracted from "Performance Optimization" note.</p>
-                  <div className="flex items-center justify-between pt-4 border-t border-white/[0.03]">
-                    <div className="flex items-center -space-x-1.5">
-                      <div className="w-6 h-6 rounded-full border border-[#1a1a1a] bg-gray-500 flex items-center justify-center text-[10px]">JD</div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                       <Sparkles className="w-3 h-3 text-yellow-500 animate-pulse" />
-                       <span className="text-[10px] text-white/30">Analyzing Impact...</span>
+                      <div className="flex items-center gap-4">
+                         <AudioLines className="w-4.5 h-4.5 text-white/30" />
+                         <div className="w-8 h-8 rounded-xl bg-gradient-to-b from-[#333] to-[#1a1a1a] flex items-center justify-center border border-white/10 shadow-lg">
+                           <Send className="w-3.5 h-3.5 text-white/40" />
+                         </div>
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                {/* Impact Card */}
-                <div className="p-5 rounded-2xl bg-gradient-to-b from-[#2a2a2a] to-[#1a1a1a] border border-white/[0.1] group hover:border-white/20 transition-all md:col-span-2" style={{ boxShadow: 'inset 0 1px 1px rgba(255,255,255,0.05), 0 4px 12px rgba(0,0,0,0.3)' }}>
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-lg bg-pink-500/20 flex items-center justify-center border border-pink-500/30">
-                        <TrendingUp className="w-3.5 h-3.5 text-pink-400" />
-                      </div>
-                      <span className="text-xs text-white/70 font-medium">Synthesis Ready</span>
+                {/* Tasks Section */}
+                <div className="w-full">
+                  <div className="flex items-center justify-between mb-8">
+                    <div className="flex items-center gap-2.5">
+                      <h3 className="text-xl text-white font-medium tracking-tight">Today's Focus</h3>
+                      <span className="bg-white/5 text-white/30 text-[10px] font-bold px-2 py-0.5 rounded-full">3</span>
                     </div>
-                    <div className="px-2 py-0.5 rounded-full bg-pink-500/10 text-[10px] text-pink-400 border border-pink-500/20 animate-pulse">New Milestone</div>
+                    <div className="flex items-center gap-4 text-[10px] text-white/30 font-bold uppercase tracking-widest">
+                       <span>View All &gt;</span>
+                       <Plus className="w-4 h-4" />
+                    </div>
                   </div>
-                  <h4 className="text-base text-white font-normal mb-2 tracking-tight">Led transition to Edge Architecture</h4>
-                  <p className="text-xs text-white/50 font-light leading-relaxed mb-4">Vela has synthesized 12 tasks, 3 decisions, and 8 notes into a high-level portfolio entry. This represents a 40% reduction in TTI.</p>
-                  <button className="w-full py-2 bg-white/5 hover:bg-white/10 rounded-lg text-xs text-white/70 border border-white/10 transition-all font-light">Add to Portfolio</button>
+
+                  <div className="space-y-6">
+                    {[
+                      { title: 'Refine skeuomorphic component tokens', date: 'Overdue', color: 'text-red-500/80' },
+                      { title: 'Prepare documentation for client sync', date: 'Today', color: 'text-amber-500/80' },
+                      { title: 'Initial draft of quarterly impact report', date: 'Tomorrow', color: 'text-white/20' },
+                    ].map((task, i) => (
+                      <div key={i} className="flex items-center justify-between group cursor-pointer border-b border-white/[0.02] pb-6">
+                        <div className="flex items-center gap-4">
+                          <div className="w-5 h-5 rounded-full border border-white/10 group-hover:border-white/30 transition-all shadow-inner" />
+                          <span className="text-sm text-white/80 font-light group-hover:text-white transition-colors">{task.title}</span>
+                        </div>
+                        <span className={`text-[11px] font-medium ${task.color}`}>{task.date}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
