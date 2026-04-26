@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
-import { Key, ExternalLink, ShieldCheck, Zap, Info, Check, AlertCircle } from 'lucide-react';
+import { Key, ExternalLink, Check, Loader2, X, Zap } from 'lucide-react';
 import { useAppStore } from '../../store';
 
 export function ApiKeyPromptModal() {
-  const { isApiKeyModalOpen, setApiKeyModalOpen, settings, updateSettings } = useAppStore();
+  const { isApiKeyModalOpen, setApiKeyModalOpen, updateSettings } = useAppStore();
   const [apiKey, setApiKey] = useState('');
   const [isSaving, setIsSaving] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -13,7 +13,7 @@ export function ApiKeyPromptModal() {
 
   const handleSave = async () => {
     if (!apiKey.trim().startsWith('sk-or-')) {
-      alert('Please enter a valid OpenRouter API key (starts with sk-or-)');
+      // Use standard styling for alert or a better feedback
       return;
     }
 
@@ -25,135 +25,125 @@ export function ApiKeyPromptModal() {
         setApiKeyModalOpen(false);
         setIsSuccess(false);
         setApiKey('');
-      }, 1500);
+      }, 1200);
     } catch (error) {
       console.error('Error saving API key:', error);
     } finally {
       setIsSaving(false);
     }
-  };
+  }
+
+  const isValid = apiKey.trim().startsWith('sk-or-');
 
   return createPortal(
-    <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-300">
+    <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in duration-300">
       <div 
-        className="w-full max-w-xl bg-[#0a0a0a] border border-white/[0.08] rounded-[40px] overflow-hidden shadow-[0_32px_64px_-16px_rgba(0,0,0,0.8)] animate-in zoom-in-95 duration-300 relative"
+        className="w-full max-w-lg bg-[#0a0a0a] border border-white/[0.08] rounded-[32px] overflow-hidden shadow-[0_32px_64px_-16px_rgba(0,0,0,0.8)] animate-in zoom-in-95 duration-300 relative"
       >
-        {/* Background Ambient Glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/2 h-32 bg-blue-500/10 blur-[80px] pointer-events-none" />
-
-        <div className="p-8 sm:p-10 relative z-10">
-          <div className="flex flex-col items-center text-center gap-6">
-            <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center border border-white/10 shadow-xl relative group">
-              <Key className="w-7 h-7 text-blue-400 group-hover:scale-110 transition-transform" />
-              <div className="absolute inset-0 rounded-2xl bg-blue-400/10 animate-pulse" />
+        {/* Header */}
+        <div className="flex items-center justify-between p-6 border-b border-white/[0.05]">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-xl bg-white/5 flex items-center justify-center border border-white/10">
+              <Zap className="w-4 h-4 text-white/70" />
             </div>
+            <h2 className="text-sm font-medium text-white tracking-tight">Intelligence Setup</h2>
+          </div>
+          <button 
+            onClick={() => setApiKeyModalOpen(false)} 
+            className="p-2 rounded-xl text-white/20 hover:text-white hover:bg-white/5 transition-all"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
 
-            <div className="space-y-2">
-              <h3 className="text-2xl font-normal text-white tracking-tight">AI Intelligence Requires a Key</h3>
-              <p className="text-sm text-white/40 font-light leading-relaxed max-w-md mx-auto">
-                To power your work OS with state-of-the-art models, you need an <span className="text-white/60 font-medium">OpenRouter API Key</span>. It's completely free to start.
-              </p>
-            </div>
+        <div className="p-8 space-y-10">
+          {/* Context */}
+          <div className="space-y-2 text-center sm:text-left">
+            <h3 className="text-xl font-medium text-white tracking-tight">Activate AI Workflows</h3>
+            <p className="text-sm text-white/40 font-light leading-relaxed">
+              Connect your <span className="text-white/60">OpenRouter</span> account to enable automated task extraction, document synthesis, and intelligence-driven navigation.
+            </p>
+          </div>
 
-            <div className="w-full grid grid-cols-2 gap-3">
-              <div className="p-4 rounded-3xl bg-white/[0.02] border border-white/[0.05] flex flex-col items-center gap-2">
-                <Zap className="w-4 h-4 text-amber-400/60" />
-                <span className="text-[10px] text-white/60 uppercase tracking-widest font-medium">Free Tier</span>
-                <span className="text-[10px] text-white/20 text-center font-light leading-tight">Access Gemma 3, GPT-OSS and more for $0.</span>
-              </div>
-              <div className="p-4 rounded-3xl bg-white/[0.02] border border-white/[0.05] flex flex-col items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-blue-400/60" />
-                <span className="text-[10px] text-white/60 uppercase tracking-widest font-medium">Privacy First</span>
-                <span className="text-[10px] text-white/20 text-center font-light leading-tight">Your key is stored locally and securely.</span>
-              </div>
-            </div>
-
-            <div className="w-full space-y-4 text-left">
-              <div className="space-y-2">
-                <label className="text-[10px] text-white/20 uppercase tracking-[0.2em] ml-1 font-semibold">Step 1: Get your key</label>
-                <a 
-                  href="https://openrouter.ai/keys" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="w-full flex items-center justify-between p-4 rounded-2xl bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.05] hover:border-white/20 transition-all group"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center">
-                      <ExternalLink className="w-4 h-4 text-white/40" />
-                    </div>
-                    <span className="text-sm text-white/80 font-light">Visit OpenRouter.ai/keys</span>
+          <div className="space-y-8">
+            {/* Step 1 */}
+            <div className="space-y-3">
+              <label className="text-[10px] font-medium text-white/20 uppercase tracking-[0.2em] ml-1">1. Access Protocol</label>
+              <a 
+                href="https://openrouter.ai/keys" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center justify-between w-full p-4 rounded-2xl bg-white/[0.02] border border-white/[0.06] hover:bg-white/[0.04] hover:border-white/10 transition-all group"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center border border-white/10 group-hover:scale-105 transition-transform">
+                    <ExternalLink className="w-3.5 h-3.5 text-white/40" />
                   </div>
-                  <ChevronRight className="w-4 h-4 text-white/20 group-hover:translate-x-1 transition-transform" />
-                </a>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-[10px] text-white/20 uppercase tracking-[0.2em] ml-1 font-semibold">Step 2: Paste it here</label>
-                <div className="relative group">
-                  <input
-                    type="password"
-                    value={apiKey}
-                    onChange={(e) => setApiKey(e.target.value)}
-                    placeholder="sk-or-v1-..."
-                    className="w-full p-4 rounded-2xl bg-white/[0.03] border border-white/[0.08] text-white text-sm font-light placeholder:text-white/10 focus:outline-none focus:border-blue-500/50 focus:bg-white/[0.05] transition-all"
-                  />
-                  <Key className="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/10 group-focus-within:text-blue-500/40" />
+                  <span className="text-sm text-white/60 font-light">Generate OpenRouter API Key</span>
                 </div>
+                <div className="px-2.5 py-1 rounded-full bg-green-500/10 border border-green-500/20">
+                  <span className="text-[9px] text-green-400 font-medium uppercase tracking-widest">Free Tier Available</span>
+                </div>
+              </a>
+            </div>
+
+            {/* Step 2 */}
+            <div className="space-y-3">
+              <label className="text-[10px] font-medium text-white/20 uppercase tracking-[0.2em] ml-1">2. Key Configuration</label>
+              <div className="relative group">
+                <input 
+                  type="password" 
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                  placeholder="sk-or-v1-..."
+                  className={`
+                    w-full bg-white/[0.02] border rounded-2xl px-5 py-4.5 text-sm text-white focus:outline-none transition-all placeholder:text-white/10 font-mono
+                    ${isValid ? 'border-blue-500/30' : 'border-white/[0.06] focus:border-white/20'}
+                  `}
+                />
+                <Key className={`absolute right-5 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors pointer-events-none ${isValid ? 'text-blue-400/40' : 'text-white/5'}`} />
               </div>
+              <p className="text-[10px] text-white/20 font-light ml-1">
+                Your key is stored locally in your browser and never shared with our servers.
+              </p>
             </div>
           </div>
         </div>
 
-        <div className="p-2 border-t border-white/[0.05] flex gap-2">
+        {/* Footer Actions */}
+        <div className="p-3 border-t border-white/[0.05] flex items-center gap-2">
           <button
             onClick={() => setApiKeyModalOpen(false)}
-            className="flex-1 px-6 py-4 rounded-[32px] text-white/40 text-sm font-light hover:text-white/60 transition-colors"
+            className="flex-1 px-6 py-4 rounded-2xl text-white/40 text-sm font-light hover:text-white/60 hover:bg-white/[0.02] transition-all"
           >
-            Later
+            Setup Later
           </button>
           <button
             onClick={handleSave}
-            disabled={!apiKey.trim() || isSaving || isSuccess}
+            disabled={!isValid || isSaving || isSuccess}
             className={`
-              flex-[1.5] px-6 py-4 rounded-[32px] text-sm font-medium transition-all shadow-xl flex items-center justify-center gap-2
+              flex-[1.5] px-6 py-4 rounded-2xl text-sm font-medium transition-all shadow-2xl flex items-center justify-center gap-2
               ${isSuccess 
-                ? 'bg-emerald-500 text-white' 
-                : 'bg-white text-black hover:bg-white/90 disabled:opacity-30'}
+                ? 'bg-green-500 text-white' 
+                : isValid 
+                  ? 'bg-white text-black hover:bg-white/90 shadow-white/10' 
+                  : 'bg-white/5 text-white/20 cursor-not-allowed'}
             `}
           >
             {isSaving ? (
-              <div className="w-5 h-5 border-2 border-black/20 border-t-black rounded-full animate-spin" />
+              <Loader2 className="w-4 h-4 animate-spin" />
             ) : isSuccess ? (
               <>
                 <Check className="w-4 h-4" />
-                Key Active
+                Intelligence Active
               </>
             ) : (
-              'Save & Activate'
+              'Activate Intelligence'
             )}
           </button>
         </div>
       </div>
     </div>,
     document.body
-  );
-}
-
-function ChevronRight({ className }: { className?: string }) {
-  return (
-    <svg 
-      xmlns="http://www.w3.org/2000/svg" 
-      width="24" 
-      height="24" 
-      viewBox="0 0 24 24" 
-      fill="none" 
-      stroke="currentColor" 
-      strokeWidth="2" 
-      strokeLinecap="round" 
-      strokeLinejoin="round" 
-      className={className}
-    >
-      <path d="m9 18 6-6-6-6"/>
-    </svg>
   );
 }
