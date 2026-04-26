@@ -4,13 +4,12 @@ import { GitBranch, X, Trash2, Plus, Loader2, CheckSquare, FileText } from 'luci
 import { CustomSelect } from '../components/ui/CustomSelect';
 import { CustomDialog } from '../components/ui/CustomDialog';
 import { useAppStore } from '../store';
-import { extractSingleItem } from '../engine/aiEngine';
 import { DecisionAddModal } from '../components/decisions/DecisionAddModal';
-import { v4 as uuidv4 } from 'uuid';
+import { RelatedContext } from '../components/common/RelatedContext';
 import type { Decision } from '../store/types';
 
 export function DecisionsPage() {
-  const { decisions, updateDecision, deleteDecision, projects, addDecision, pendingOpenId, pendingOpenType, clearPendingOpen, setPendingOpen } = useAppStore();
+  const { decisions, updateDecision, deleteDecision, projects, pendingOpenId, pendingOpenType, clearPendingOpen, setPendingOpen } = useAppStore();
   const navigate = useNavigate();
   const [activeDecisionId, setActiveDecisionId] = useState<string | null>(null);
   const [decisionToDelete, setDecisionToDelete] = useState<string | null>(null);
@@ -25,6 +24,7 @@ export function DecisionsPage() {
       clearPendingOpen();
     }
   }, [pendingOpenId, pendingOpenType, clearPendingOpen]);
+
   const [filter, setFilter] = useState<string>('All');
   const activeDecision = decisions.find(d => d.id === activeDecisionId);
 
@@ -35,9 +35,6 @@ export function DecisionsPage() {
     setActiveDecisionId(decision.id);
   };
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-
-
-
 
   const closeDecision = () => {
     setActiveDecisionId(null);
@@ -165,9 +162,12 @@ export function DecisionsPage() {
 
       {/* Decision Detail Modal */}
       {activeDecision && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="bg-[#111] border border-white/[0.05] rounded-2xl w-full max-w-2xl max-h-[90vh] shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between p-5 border-b border-white/[0.05]">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200" onClick={closeDecision}>
+          <div 
+            className="bg-[#111] border border-white/[0.05] rounded-2xl w-full max-w-2xl max-h-[90vh] shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between p-4 px-5 border-b border-white/[0.05]">
               <div className="flex items-center gap-2">
                 <GitBranch className="w-4 h-4 text-purple-400/80" />
                 <span className="text-sm text-white/70 font-medium">Decision Details</span>
@@ -189,17 +189,17 @@ export function DecisionsPage() {
               </div>
             </div>
 
-            <div className="p-6 flex-1 overflow-y-auto hide-scrollbar flex flex-col gap-6">
+            <div className="p-5 px-6 flex-1 overflow-y-auto hide-scrollbar flex flex-col gap-5">
               <input
                 type="text"
                 value={activeDecision.title}
                 onChange={(e) => updateDecision(activeDecision.id, { title: e.target.value })}
-                className="w-full bg-transparent border-none text-2xl text-white font-normal focus:outline-none focus:ring-0 px-0 placeholder:text-white/20"
+                className="w-full bg-transparent border-none text-xl text-white font-normal focus:outline-none focus:ring-0 px-0 placeholder:text-white/20"
                 placeholder="Decision Title"
               />
 
-              <div className="flex items-center gap-4 p-4 rounded-xl bg-white/[0.02] border border-white/[0.05]">
-                <span className="w-24 text-xs text-white/60 flex items-center gap-2 font-medium">Project</span>
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/[0.05]">
+                <span className="w-20 text-[10px] text-white/40 flex items-center gap-2 font-semibold uppercase tracking-wider">Project</span>
                 <CustomSelect
                   value={activeDecision.projectId || 'none'}
                   onChange={(val) => updateDecision(activeDecision.id, { projectId: val === 'none' ? null : val })}
@@ -208,106 +208,58 @@ export function DecisionsPage() {
                     ...projects.map(p => ({ value: p.id, label: p.name }))
                   ]}
                   className="flex-1"
+                  triggerClassName="bg-transparent border-none p-0 text-xs font-normal"
                 />
               </div>
 
-              <div>
-                <label className="text-xs text-white/60 font-medium mb-2 block uppercase tracking-wider">Reasoning</label>
+              <div className="flex flex-col">
+                <span className="text-[10px] text-white/40 font-semibold block mb-2 uppercase tracking-widest">Reasoning</span>
                 <textarea
                   value={activeDecision.reasoning}
                   onChange={(e) => updateDecision(activeDecision.id, { reasoning: e.target.value })}
-                  className="w-full bg-transparent border-none text-sm text-white/80 font-light leading-relaxed focus:outline-none focus:ring-0 px-0 resize-none min-h-[100px] placeholder:text-white/20"
+                  className="w-full bg-transparent border-none text-sm text-white/70 font-light leading-relaxed focus:outline-none focus:ring-0 px-0 resize-none min-h-[80px] placeholder:text-white/20"
                   placeholder="Why did you make this decision?"
                 />
               </div>
 
-              <div>
-                <label className="text-xs text-white/60 font-medium mb-2 block uppercase tracking-wider">Tradeoffs</label>
-                <textarea
-                  value={activeDecision.tradeoffs || ''}
-                  onChange={(e) => updateDecision(activeDecision.id, { tradeoffs: e.target.value })}
-                  className="w-full bg-transparent border-none text-sm text-white/80 font-light leading-relaxed focus:outline-none focus:ring-0 px-0 resize-none min-h-[60px] placeholder:text-white/20"
-                  placeholder="What did you sacrifice?"
-                />
-              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                <div className="flex flex-col">
+                  <span className="text-[10px] text-white/40 font-semibold block mb-2 uppercase tracking-widest">Tradeoffs</span>
+                  <textarea
+                    value={activeDecision.tradeoffs || ''}
+                    onChange={(e) => updateDecision(activeDecision.id, { tradeoffs: e.target.value })}
+                    className="w-full bg-transparent border-none text-sm text-white/70 font-light leading-relaxed focus:outline-none focus:ring-0 px-0 resize-none min-h-[60px] placeholder:text-white/20"
+                    placeholder="What did you sacrifice?"
+                  />
+                </div>
 
-              <div>
-                <label className="text-xs text-white/60 font-medium mb-2 block uppercase tracking-wider">Risks</label>
-                <textarea
-                  value={activeDecision.risks || ''}
-                  onChange={(e) => updateDecision(activeDecision.id, { risks: e.target.value })}
-                  className="w-full bg-transparent border-none text-sm text-white/80 font-light leading-relaxed focus:outline-none focus:ring-0 px-0 resize-none min-h-[60px] placeholder:text-white/20 mb-6"
-                  placeholder="What are the risks?"
-                />
-              </div>
-
-              {/* Related Items */}
-              <div className="border-t border-white/[0.05] pt-6">
-                <span className="text-xs text-white/60 font-medium block mb-4 uppercase tracking-wider">Related Context</span>
-                <div className="flex flex-col gap-3">
-                  {/* Linked Tasks */}
-                  {[
-                    ...useAppStore.getState().tasks.filter(t => activeDecision.linkedTaskIds?.includes(t.id) || t.linkedDecisionIds?.includes(activeDecision.id))
-                  ].map(task => (
-                    <div 
-                      key={task.id}
-                      onClick={() => {
-                        setPendingOpen('task', task.id);
-                        navigate('/tasks');
-                      }}
-                      className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/[0.05] hover:bg-white/[0.08] transition-colors cursor-pointer group"
-                    >
-                      <CheckSquare className="w-4 h-4 text-emerald-400/60" />
-                      <div className="flex-1 min-w-0">
-                        <div className="text-xs text-white/80 font-normal truncate">{task.title}</div>
-                        <div className="text-[10px] text-white/30 truncate">Task • {task.status}</div>
-                      </div>
-                    </div>
-                  ))}
-
-                  {/* Linked Notes */}
-                  {[
-                    ...useAppStore.getState().notes.filter(n => activeDecision.linkedNoteIds?.includes(n.id) || n.linkedDecisionIds?.includes(activeDecision.id))
-                  ].map(note => (
-                    <div 
-                      key={note.id}
-                      onClick={() => {
-                        setPendingOpen('note', note.id);
-                        navigate('/notes');
-                      }}
-                      className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/[0.05] hover:bg-white/[0.08] transition-colors cursor-pointer group"
-                    >
-                      <FileText className="w-4 h-4 text-blue-400/60" />
-                      <div className="flex-1 min-w-0">
-                        <div className="text-xs text-white/80 font-normal truncate">{note.title}</div>
-                        <div className="text-[10px] text-white/30 truncate">Note • {note.category}</div>
-                      </div>
-                    </div>
-                  ))}
-
-                  {/* Linked Decisions */}
-                  {useAppStore.getState().decisions.filter(d => d.id !== activeDecision.id && (activeDecision.linkedDecisionIds?.includes(d.id) || d.linkedDecisionIds?.includes(activeDecision.id))).map(decision => (
-                    <div 
-                      key={decision.id}
-                      onClick={() => setActiveDecisionId(decision.id)}
-                      className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/[0.05] hover:bg-white/[0.08] transition-colors cursor-pointer group"
-                    >
-                      <GitBranch className="w-4 h-4 text-purple-400/60" />
-                      <div className="flex-1 min-w-0">
-                        <div className="text-xs text-white/80 font-normal truncate">{decision.title}</div>
-                        <div className="text-[10px] text-white/30 truncate">Decision</div>
-                      </div>
-                    </div>
-                  ))}
-
-                  {activeDecision.linkedTaskIds?.length === 0 && activeDecision.linkedNoteIds?.length === 0 && activeDecision.linkedDecisionIds?.length === 0 && 
-                   useAppStore.getState().tasks.filter(t => t.linkedDecisionIds?.includes(activeDecision.id)).length === 0 &&
-                   useAppStore.getState().notes.filter(n => n.linkedDecisionIds?.includes(activeDecision.id)).length === 0 &&
-                   useAppStore.getState().decisions.filter(d => d.linkedDecisionIds?.includes(activeDecision.id)).length === 0 && (
-                    <div className="text-xs text-white/20 italic font-light">No linked items yet. The AI will link context automatically as you chat.</div>
-                  )}
+                <div className="flex flex-col">
+                  <span className="text-[10px] text-white/40 font-semibold block mb-2 uppercase tracking-widest">Risks</span>
+                  <textarea
+                    value={activeDecision.risks || ''}
+                    onChange={(e) => updateDecision(activeDecision.id, { risks: e.target.value })}
+                    className="w-full bg-transparent border-none text-sm text-white/70 font-light leading-relaxed focus:outline-none focus:ring-0 px-0 resize-none min-h-[60px] placeholder:text-white/20"
+                    placeholder="What are the risks?"
+                  />
                 </div>
               </div>
+
+              <RelatedContext 
+                currentId={activeDecision.id}
+                currentType="decision"
+                linkedTaskIds={activeDecision.linkedTaskIds}
+                linkedNoteIds={activeDecision.linkedNoteIds}
+                linkedDecisionIds={activeDecision.linkedDecisionIds}
+                onLink={(id, type) => {
+                  if (type === 'task') {
+                    updateDecision(activeDecision.id, { linkedTaskIds: [...(activeDecision.linkedTaskIds || []), id] });
+                  } else if (type === 'note') {
+                    updateDecision(activeDecision.id, { linkedNoteIds: [...(activeDecision.linkedNoteIds || []), id] });
+                  } else if (type === 'decision') {
+                    updateDecision(activeDecision.id, { linkedDecisionIds: [...(activeDecision.linkedDecisionIds || []), id] });
+                  }
+                }}
+              />
             </div>
           </div>
         </div>

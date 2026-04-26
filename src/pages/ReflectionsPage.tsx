@@ -392,77 +392,78 @@ Mood Score: ${answers.moodScore}/10`;
 
 
       {activeReflection && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-300">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-300" onClick={() => setActiveReflectionId(null)}>
           <div 
-            className="w-full max-w-4xl bg-[#0a0a0a]/90 border border-white/[0.08] rounded-[40px] overflow-hidden shadow-2xl backdrop-blur-2xl animate-in zoom-in-95 duration-300 flex flex-col max-h-[90vh]"
+            className="w-full max-w-4xl bg-[#0a0a0a]/90 border border-white/[0.08] rounded-2xl overflow-hidden shadow-2xl backdrop-blur-2xl animate-in zoom-in-95 duration-300 flex flex-col max-h-[90vh]"
+            onClick={(e) => e.stopPropagation()}
             style={{ boxShadow: '0 32px 64px -16px rgba(0,0,0,0.8)' }}
           >
-            <div className="p-8 pb-4 flex items-center justify-between border-b border-white/[0.05]">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-2xl bg-white/[0.03] flex items-center justify-center border border-white/[0.08]">
-                  <RefreshCw className="w-6 h-6 text-white/40" strokeWidth={1} />
+            <div className="p-5 px-6 flex items-center justify-between border-b border-white/[0.05]">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-white/[0.03] flex items-center justify-center border border-white/[0.08]">
+                  <RefreshCw className="w-5 h-5 text-white/40" strokeWidth={1} />
                 </div>
                 <div>
-                  <h3 className="text-xl font-light text-white tracking-tight">
+                  <h3 className="text-lg font-light text-white tracking-tight">
                     {new Date(activeReflection.createdAt).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
                   </h3>
-                  <span className="text-[10px] text-white/20 uppercase tracking-[0.3em]">
+                  <span className="text-[9px] text-white/20 uppercase tracking-[0.3em]">
                     {new Date(activeReflection.createdAt).toLocaleDateString('en-US', { weekday: 'long' })}
                   </span>
                 </div>
               </div>
-              <div className="flex items-center gap-1">
+              <div className="flex items-center gap-1.5">
                 <button
                   onClick={() => {
                     setReflectionToDelete(activeReflection.id);
                     setActiveReflectionId(null);
                   }}
-                  className="p-3 rounded-2xl bg-white/5 text-white/40 hover:text-red-400 hover:bg-red-400/10 transition-all group"
+                  className="p-2 rounded-xl bg-white/5 text-white/40 hover:text-red-400 hover:bg-red-400/10 transition-all group"
                   title="Delete reflection"
                 >
-                  <Trash2 className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                  <Trash2 className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => setActiveReflectionId(null)}
-                  className="p-3 rounded-2xl bg-white/5 text-white/40 hover:text-white transition-all"
+                  className="p-2 rounded-xl bg-white/5 text-white/40 hover:text-white transition-all"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-4 h-4" />
                 </button>
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
-              <div className="flex items-center justify-between mb-10">
+            <div className="flex-1 overflow-y-auto p-6 px-8 custom-scrollbar">
+              <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
-                  <div className="px-4 py-2 rounded-full bg-white/[0.03] border border-white/[0.08] flex items-center gap-2">
-                    <Star className="w-4 h-4 text-purple-400/60" />
-                    <span className="text-xs font-medium text-white/60 tracking-wider">{activeReflection.moodScore}/10 ENERGY</span>
+                  <div className="px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.08] flex items-center gap-2">
+                    <Star className="w-3.5 h-3.5 text-purple-400/60" />
+                    <span className="text-[10px] font-medium text-white/60 tracking-widest uppercase">{activeReflection.moodScore}/10 Energy</span>
                   </div>
                 </div>
                 {activeReflection.projectId && (
-                  <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.03] border border-white/[0.08]">
-                    <Folder className="w-3.5 h-3.5 text-white/20" />
-                    <span className="text-xs font-medium text-white/40">{projects.find(p => p.id === activeReflection.projectId)?.name}</span>
+                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/[0.03] border border-white/[0.08]">
+                    <Folder className="w-3 h-3 text-white/20" />
+                    <span className="text-[10px] font-medium text-white/40 uppercase tracking-wider">{projects.find(p => p.id === activeReflection.projectId)?.name}</span>
                   </div>
                 )}
               </div>
 
-              <div className="relative mb-12">
+              <div className="relative mb-10">
                 <div className="absolute left-0 top-0 bottom-0 w-[1px] bg-gradient-to-b from-white/20 to-transparent rounded-full" />
-                <div className="pl-8 text-white/90 font-light leading-relaxed prose prose-invert prose-sm max-w-none">
+                <div className="pl-6 text-white/80 font-light leading-relaxed prose prose-invert prose-sm max-w-none">
                   <ReactMarkdown>{activeReflection.summary}</ReactMarkdown>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 pt-8 border-t border-white/[0.05]">
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2.5">
-                    <Target className="w-4 h-4 text-emerald-400" />
-                    <span className="text-[11px] uppercase tracking-[0.2em] text-emerald-400/80 font-semibold">Wins</span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-6 border-t border-white/[0.05]">
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Target className="w-3.5 h-3.5 text-emerald-400" />
+                    <span className="text-[10px] uppercase tracking-[0.2em] text-emerald-400/80 font-semibold">Wins</span>
                   </div>
-                  <ul className="space-y-3 pl-1">
+                  <ul className="space-y-2 pl-1">
                     {activeReflection.wins.map((w, i) => (
-                      <li key={i} className="text-xs text-white/40 font-light leading-relaxed flex gap-3">
+                      <li key={i} className="text-[11px] text-white/40 font-light leading-relaxed flex gap-2.5">
                         <span className="text-white/20 mt-1.5 w-1 h-1 rounded-full bg-current shrink-0" />
                         {w}
                       </li>
@@ -470,14 +471,14 @@ Mood Score: ${answers.moodScore}/10`;
                   </ul>
                 </div>
 
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2.5">
-                    <Zap className="w-4 h-4 text-red-400" />
-                    <span className="text-[11px] uppercase tracking-[0.2em] text-red-400/80 font-semibold">Friction</span>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Zap className="w-3.5 h-3.5 text-red-400" />
+                    <span className="text-[10px] uppercase tracking-[0.2em] text-red-400/80 font-semibold">Friction</span>
                   </div>
-                  <ul className="space-y-3 pl-1">
+                  <ul className="space-y-2 pl-1">
                     {activeReflection.challenges.map((c, i) => (
-                      <li key={i} className="text-xs text-white/40 font-light leading-relaxed flex gap-3">
+                      <li key={i} className="text-[11px] text-white/40 font-light leading-relaxed flex gap-2.5">
                         <span className="text-white/20 mt-1.5 w-1 h-1 rounded-full bg-current shrink-0" />
                         {c}
                       </li>
@@ -485,14 +486,14 @@ Mood Score: ${answers.moodScore}/10`;
                   </ul>
                 </div>
 
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2.5">
-                    <BookOpen className="w-4 h-4 text-blue-400" />
-                    <span className="text-[11px] uppercase tracking-[0.2em] text-blue-400/80 font-semibold">Insights</span>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <BookOpen className="w-3.5 h-3.5 text-blue-400" />
+                    <span className="text-[10px] uppercase tracking-[0.2em] text-blue-400/80 font-semibold">Insights</span>
                   </div>
-                  <ul className="space-y-3 pl-1">
+                  <ul className="space-y-2 pl-1">
                     {activeReflection.learnings.map((l, i) => (
-                      <li key={i} className="text-xs text-white/40 font-light leading-relaxed flex gap-3">
+                      <li key={i} className="text-[11px] text-white/40 font-light leading-relaxed flex gap-2.5">
                         <span className="text-white/20 mt-1.5 w-1 h-1 rounded-full bg-current shrink-0" />
                         {l}
                       </li>
@@ -500,14 +501,14 @@ Mood Score: ${answers.moodScore}/10`;
                   </ul>
                 </div>
 
-                <div className="space-y-4">
-                  <div className="flex items-center gap-2.5">
-                    <Lightbulb className="w-4 h-4 text-amber-400" />
-                    <span className="text-[11px] uppercase tracking-[0.2em] text-amber-400/80 font-semibold">Adjustments</span>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Lightbulb className="w-3.5 h-3.5 text-amber-400" />
+                    <span className="text-[10px] uppercase tracking-[0.2em] text-amber-400/80 font-semibold">Adjustments</span>
                   </div>
-                  <ul className="space-y-3 pl-1">
+                  <ul className="space-y-2 pl-1">
                     {activeReflection.improvements?.map((imp, i) => (
-                      <li key={i} className="text-xs text-white/40 font-light leading-relaxed flex gap-3">
+                      <li key={i} className="text-[11px] text-white/40 font-light leading-relaxed flex gap-2.5">
                         <span className="text-white/20 mt-1.5 w-1 h-1 rounded-full bg-current shrink-0" />
                         {imp}
                       </li>

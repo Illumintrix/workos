@@ -8,6 +8,7 @@ import { CustomDialog } from '../components/ui/CustomDialog';
 import { NoteAddModal } from '../components/notes/NoteAddModal';
 import { v4 as uuidv4 } from 'uuid';
 import type { Note } from '../store/types';
+import { RelatedContext } from '../components/common/RelatedContext';
 
 export function NotesPage() {
   const { notes, addNote, updateNote, deleteNote, projects, pendingOpenId, pendingOpenType, clearPendingOpen, setPendingOpen } = useAppStore();
@@ -170,11 +171,15 @@ export function NotesPage() {
         )}
       </div>
 
+
       {/* Note Detail Modal */}
       {activeNote && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="bg-[#111] border border-white/[0.05] rounded-2xl w-full max-w-2xl max-h-[90vh] shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
-            <div className="flex items-center justify-between p-5 border-b border-white/[0.05]">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200" onClick={closeNote}>
+          <div 
+            className="bg-[#111] border border-white/[0.05] rounded-2xl w-full max-w-2xl max-h-[90vh] shadow-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between p-4 px-5 border-b border-white/[0.05]">
               <div className="flex items-center gap-2">
                 <FileText className="w-4 h-4 text-purple-400/80" />
                 <span className="text-sm text-white/70 font-medium">Note Details</span>
@@ -196,120 +201,73 @@ export function NotesPage() {
               </div>
             </div>
 
-            <div className="p-6 flex-1 overflow-y-auto hide-scrollbar flex flex-col gap-6">
+            <div className="p-5 px-6 flex-1 overflow-y-auto hide-scrollbar flex flex-col gap-5">
               <input
                 type="text"
                 value={activeNote.title}
                 onChange={(e) => updateNote(activeNote.id, { title: e.target.value })}
-                className="w-full bg-transparent border-none text-2xl text-white font-normal focus:outline-none focus:ring-0 px-0 placeholder:text-white/20"
+                className="w-full bg-transparent border-none text-xl text-white font-normal focus:outline-none focus:ring-0 px-0 placeholder:text-white/20"
                 placeholder="Note Title"
               />
               
-               <div className="flex items-center gap-4 p-4 rounded-xl bg-white/[0.02] border border-white/[0.05]">
-                <span className="w-24 text-xs text-white/60 flex items-center gap-2 font-medium">Project</span>
-                <CustomSelect
-                  value={activeNote.projectId || 'none'}
-                  onChange={(val) => updateNote(activeNote.id, { projectId: val === 'none' ? null : val })}
-                  options={[
-                    { value: 'none', label: 'None' },
-                    ...projects.map(p => ({ value: p.id, label: p.name }))
-                  ]}
-                  className="flex-1"
-                />
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/[0.05]">
+                  <span className="w-20 text-[10px] text-white/40 flex items-center gap-2 font-semibold uppercase tracking-wider">Project</span>
+                  <CustomSelect
+                    value={activeNote.projectId || 'none'}
+                    onChange={(val) => updateNote(activeNote.id, { projectId: val === 'none' ? null : val })}
+                    options={[
+                      { value: 'none', label: 'None' },
+                      ...projects.map(p => ({ value: p.id, label: p.name }))
+                    ]}
+                    className="flex-1"
+                    triggerClassName="bg-transparent border-none p-0 text-xs font-normal"
+                  />
+                </div>
+
+                <div className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/[0.05]">
+                  <span className="w-20 text-[10px] text-white/40 flex items-center gap-2 font-semibold uppercase tracking-wider">Category</span>
+                  <input
+                    type="text"
+                    value={activeNote.category || ''}
+                    onChange={(e) => updateNote(activeNote.id, { category: e.target.value })}
+                    className="flex-1 bg-transparent text-xs text-white focus:outline-none border-none p-0 placeholder:text-white/20"
+                    placeholder="General"
+                  />
+                </div>
               </div>
 
-              <div className="flex items-center gap-4 p-4 rounded-xl bg-white/[0.02] border border-white/[0.05]">
-                <span className="w-24 text-xs text-white/60 flex items-center gap-2 font-medium"><FileText className="w-3 h-3 text-white/40"/> Category</span>
-                <input
-                  type="text"
-                  value={activeNote.category || ''}
-                  onChange={(e) => updateNote(activeNote.id, { category: e.target.value })}
-                  className="flex-1 bg-transparent text-sm text-white focus:outline-none border-none p-0 placeholder:text-white/20"
-                  placeholder="General"
-                />
-              </div>
-
-              <div className="flex-1 flex flex-col min-h-[300px]">
-                <span className="text-xs text-white/60 font-medium block mb-2 uppercase tracking-wider">Content</span>
+              <div className="flex flex-col">
+                <span className="text-[10px] text-white/40 font-semibold block mb-2 uppercase tracking-widest">Content</span>
                 <textarea
                   value={activeNote.content}
                   onChange={(e) => updateNote(activeNote.id, { content: e.target.value })}
-                  className="flex-1 w-full bg-transparent border-none text-sm text-white/80 font-light leading-relaxed focus:outline-none focus:ring-0 px-0 resize-none placeholder:text-white/20 mb-6"
+                  className="w-full bg-transparent border-none text-sm text-white/70 font-light leading-relaxed focus:outline-none focus:ring-0 px-0 resize-none placeholder:text-white/20 min-h-[200px]"
                   placeholder="Note content..."
                 />
               </div>
 
-              {/* Related Items */}
-              <div className="border-t border-white/[0.05] pt-6">
-                <span className="text-xs text-white/60 font-medium block mb-4 uppercase tracking-wider">Related Context</span>
-                <div className="flex flex-col gap-3">
-                  {/* Linked Tasks */}
-                  {[
-                    ...useAppStore.getState().tasks.filter(t => activeNote.linkedTaskIds?.includes(t.id) || t.linkedNoteIds?.includes(activeNote.id))
-                  ].map(task => (
-                    <div 
-                      key={task.id}
-                      onClick={() => {
-                        setPendingOpen('task', task.id);
-                        navigate('/tasks');
-                      }}
-                      className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/[0.05] hover:bg-white/[0.08] transition-colors cursor-pointer group"
-                    >
-                      <CheckSquare className="w-4 h-4 text-emerald-400/60" />
-                      <div className="flex-1 min-w-0">
-                        <div className="text-xs text-white/80 font-normal truncate">{task.title}</div>
-                        <div className="text-[10px] text-white/30 truncate">Task • {task.status}</div>
-                      </div>
-                    </div>
-                  ))}
-
-                  {/* Linked Notes */}
-                  {useAppStore.getState().notes.filter(n => n.id !== activeNote.id && (activeNote.linkedNoteIds?.includes(n.id) || n.linkedNoteIds?.includes(activeNote.id))).map(note => (
-                    <div 
-                      key={note.id}
-                      onClick={() => setActiveNoteId(note.id)}
-                      className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/[0.05] hover:bg-white/[0.08] transition-colors cursor-pointer group"
-                    >
-                      <FileText className="w-4 h-4 text-blue-400/60" />
-                      <div className="flex-1 min-w-0">
-                        <div className="text-xs text-white/80 font-normal truncate">{note.title}</div>
-                        <div className="text-[10px] text-white/30 truncate">Note • {note.category}</div>
-                      </div>
-                    </div>
-                  ))}
-
-                  {/* Linked Decisions */}
-                  {[
-                    ...useAppStore.getState().decisions.filter(d => activeNote.linkedDecisionIds?.includes(d.id) || d.linkedNoteIds?.includes(activeNote.id))
-                  ].map(decision => (
-                    <div 
-                      key={decision.id}
-                      onClick={() => {
-                        setPendingOpen('decision', decision.id);
-                        navigate('/decisions');
-                      }}
-                      className="flex items-center gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/[0.05] hover:bg-white/[0.08] transition-colors cursor-pointer group"
-                    >
-                      <GitBranch className="w-4 h-4 text-purple-400/60" />
-                      <div className="flex-1 min-w-0">
-                        <div className="text-xs text-white/80 font-normal truncate">{decision.title}</div>
-                        <div className="text-[10px] text-white/30 truncate">Decision</div>
-                      </div>
-                    </div>
-                  ))}
-
-                  {activeNote.linkedTaskIds?.length === 0 && activeNote.linkedNoteIds?.length === 0 && activeNote.linkedDecisionIds?.length === 0 && 
-                   useAppStore.getState().tasks.filter(t => t.linkedNoteIds?.includes(activeNote.id)).length === 0 &&
-                   useAppStore.getState().notes.filter(n => n.linkedNoteIds?.includes(activeNote.id)).length === 0 &&
-                   useAppStore.getState().decisions.filter(d => d.linkedNoteIds?.includes(activeNote.id)).length === 0 && (
-                    <div className="text-xs text-white/20 italic font-light">No linked items yet. The AI will link context automatically as you chat.</div>
-                  )}
-                </div>
-              </div>
+              <RelatedContext 
+                currentId={activeNote.id}
+                currentType="note"
+                linkedTaskIds={activeNote.linkedTaskIds}
+                linkedNoteIds={activeNote.linkedNoteIds}
+                linkedDecisionIds={activeNote.linkedDecisionIds}
+                onLink={(id, type) => {
+                  if (type === 'task') {
+                    updateNote(activeNote.id, { linkedTaskIds: [...(activeNote.linkedTaskIds || []), id] });
+                  } else if (type === 'note') {
+                    updateNote(activeNote.id, { linkedNoteIds: [...(activeNote.linkedNoteIds || []), id] });
+                  } else if (type === 'decision') {
+                    updateNote(activeNote.id, { linkedDecisionIds: [...(activeNote.linkedDecisionIds || []), id] });
+                  }
+                }}
+              />
             </div>
           </div>
         </div>
       )}
+
 
       {/* Manual Add Modal */}
       <NoteAddModal 
