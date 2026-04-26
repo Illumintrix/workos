@@ -1,4 +1,4 @@
-import { format, isToday, isYesterday, isTomorrow, isAfter, isBefore, addDays, startOfWeek, endOfWeek, parseISO } from 'date-fns';
+import { format, isToday, isYesterday, isTomorrow, isBefore, addDays, endOfWeek, parseISO } from 'date-fns';
 
 export type TimeBucket = 'Today' | 'In this week' | 'Upcoming' | 'Completed';
 
@@ -28,8 +28,6 @@ export function formatRelativeDueDate(dueDate: string | null): { text: string; c
   const date = parseISO(dueDate);
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const yesterday = addDays(today, -1);
-  const tomorrow = addDays(today, 1);
   const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
 
   // Overdue

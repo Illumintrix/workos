@@ -1,9 +1,9 @@
-import { Check, Trash2, X, Tag, Calendar, Folder, Hash } from 'lucide-react';
+import { Check, Trash2, X } from 'lucide-react';
 import { useAppStore } from '../../store';
 import { CustomSelect } from '../ui/CustomSelect';
 import { statusColumns } from '../../constants/tasks';
 import { RelatedContext } from '../common/RelatedContext';
-import type { Task, TaskStatus } from '../../store/types';
+import type { TaskStatus } from '../../store/types';
 
 interface TaskDetailModalProps {
   taskId: string | null;

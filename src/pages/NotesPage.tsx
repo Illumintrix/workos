@@ -1,18 +1,17 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { FileText, X, Trash2, Plus, Loader2, CheckSquare, GitBranch } from 'lucide-react';
+
+import { FileText, X, Trash2, Plus } from 'lucide-react';
 import { CustomSelect } from '../components/ui/CustomSelect';
 import { useAppStore } from '../store';
-import { extractSingleItem } from '../engine/aiEngine';
+
 import { CustomDialog } from '../components/ui/CustomDialog';
 import { NoteAddModal } from '../components/notes/NoteAddModal';
-import { v4 as uuidv4 } from 'uuid';
+
 import type { Note } from '../store/types';
 import { RelatedContext } from '../components/common/RelatedContext';
 
 export function NotesPage() {
-  const { notes, addNote, updateNote, deleteNote, projects, pendingOpenId, pendingOpenType, clearPendingOpen, setPendingOpen } = useAppStore();
-  const navigate = useNavigate();
+  const { notes, updateNote, deleteNote, projects, pendingOpenId, pendingOpenType, clearPendingOpen } = useAppStore();
   const [activeNoteId, setActiveNoteId] = useState<string | null>(null);
   const [noteToDelete, setNoteToDelete] = useState<string | null>(null);
 

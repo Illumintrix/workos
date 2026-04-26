@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { GitBranch, X, Trash2, Plus, Loader2, CheckSquare, FileText } from 'lucide-react';
+
+import { GitBranch, X, Trash2, Plus } from 'lucide-react';
 import { CustomSelect } from '../components/ui/CustomSelect';
 import { CustomDialog } from '../components/ui/CustomDialog';
 import { useAppStore } from '../store';
@@ -9,8 +9,7 @@ import { RelatedContext } from '../components/common/RelatedContext';
 import type { Decision } from '../store/types';
 
 export function DecisionsPage() {
-  const { decisions, updateDecision, deleteDecision, projects, pendingOpenId, pendingOpenType, clearPendingOpen, setPendingOpen } = useAppStore();
-  const navigate = useNavigate();
+  const { decisions, updateDecision, deleteDecision, projects, pendingOpenId, pendingOpenType, clearPendingOpen } = useAppStore();
   const [activeDecisionId, setActiveDecisionId] = useState<string | null>(null);
   const [decisionToDelete, setDecisionToDelete] = useState<string | null>(null);
 

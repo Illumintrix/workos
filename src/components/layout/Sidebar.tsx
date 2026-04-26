@@ -12,7 +12,7 @@ import {
   Briefcase,
   Search,
 
-  ChevronLeft,
+
   Layers,
   LogOut,
   User as UserIcon,

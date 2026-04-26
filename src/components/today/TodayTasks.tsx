@@ -3,7 +3,7 @@ import { useAppStore } from '../../store';
 import { Plus, ChevronRight, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { formatRelativeDueDate } from '../../utils/dateUtils';
-import { TaskDetailModal } from '../tasks/TaskDetailModal';
+
 import type { TaskStatus } from '../../store/types';
 
 interface TodayTasksProps {

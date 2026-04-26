@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Search, X, Hash, Check, Filter, ChevronDown } from 'lucide-react';
+import { Search, Hash, Check, Filter, ChevronDown } from 'lucide-react';
 import { useAppStore } from '../../store';
 import { useNavigate } from 'react-router-dom';
 

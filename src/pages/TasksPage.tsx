@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Check, List, LayoutGrid, Trash2, Plus, ChevronRight } from 'lucide-react';
+
+import { Check, List, LayoutGrid, Trash2, Plus } from 'lucide-react';
 import { CustomSelect } from '../components/ui/CustomSelect';
 import { useAppStore } from '../store';
 import { TaskAddModal } from '../components/tasks/TaskAddModal';

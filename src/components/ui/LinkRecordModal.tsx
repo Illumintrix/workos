@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Search, Loader2, CheckSquare, FileText, GitBranch, X, Hash } from 'lucide-react';
+import { Search, CheckSquare, FileText, GitBranch, X } from 'lucide-react';
 import { useAppStore } from '../../store';
 
 interface LinkRecordModalProps {
