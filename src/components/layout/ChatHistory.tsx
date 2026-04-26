@@ -32,24 +32,7 @@ export function ChatHistory({ isCollapsed }: ChatHistoryProps) {
     }
   };
 
-  if (isCollapsed) {
-    return (
-      <div className="flex flex-col items-center gap-4 py-4 border-t border-white/[0.04]">
-        <button 
-          onClick={handleNewChat}
-          className="p-2 rounded-xl text-white/30 hover:text-white hover:bg-white/5 transition-all"
-        >
-          <Plus className="w-5 h-5" />
-        </button>
-        <button 
-          onClick={() => setIsExpanded(!isExpanded)}
-          className={`p-2 rounded-xl transition-all ${selectedConversationId ? 'bg-white/10 text-white' : 'text-white/30'}`}
-        >
-          <Plus className="w-5 h-5" />
-        </button>
-      </div>
-    );
-  }
+  if (isCollapsed) return null;
 
   return (
     <div className="flex flex-col py-4 border-t border-white/[0.04]">
@@ -75,26 +58,26 @@ export function ChatHistory({ isCollapsed }: ChatHistoryProps) {
               {isSortOpen && (
                 <>
                   <div className="fixed inset-0 z-40" onClick={() => setIsSortOpen(false)} />
-                  <div className="absolute right-0 top-full mt-1 w-40 bg-[#1a1a1a] border border-white/[0.08] rounded-xl shadow-2xl z-50 overflow-hidden p-1 animate-in fade-in zoom-in-95 duration-200">
+                  <div className="absolute right-0 top-full mt-2 w-48 bg-[#0a0a0a]/95 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.9)] z-50 overflow-hidden p-1.5 animate-in fade-in zoom-in-95 duration-200">
                     <button
                       onClick={() => {
                         setChatSortOrder('recently_updated');
                         setIsSortOpen(false);
                       }}
-                      className="flex items-center justify-between w-full px-3 py-2 rounded-lg text-[11px] text-white/60 hover:text-white hover:bg-white/5 transition-all"
+                      className={`flex items-center justify-between w-full px-3 py-2.5 rounded-xl text-sm transition-all group/item ${chatSortOrder === 'recently_updated' ? 'bg-white/5 text-white' : 'text-white/60 hover:text-white hover:bg-white/[0.03] font-light'}`}
                     >
                       Recently updated
-                      {chatSortOrder === 'recently_updated' && <Check className="w-3 h-3 text-blue-400" />}
+                      {chatSortOrder === 'recently_updated' && <Check className="w-3.5 h-3.5 text-blue-400" />}
                     </button>
                     <button
                       onClick={() => {
                         setChatSortOrder('recently_created');
                         setIsSortOpen(false);
                       }}
-                      className="flex items-center justify-between w-full px-3 py-2 rounded-lg text-[11px] text-white/60 hover:text-white hover:bg-white/5 transition-all"
+                      className={`flex items-center justify-between w-full px-3 py-2.5 rounded-xl text-sm transition-all group/item ${chatSortOrder === 'recently_created' ? 'bg-white/5 text-white' : 'text-white/60 hover:text-white hover:bg-white/[0.03] font-light'}`}
                     >
                       Recently created
-                      {chatSortOrder === 'recently_created' && <Check className="w-3 h-3 text-blue-400" />}
+                      {chatSortOrder === 'recently_created' && <Check className="w-3.5 h-3.5 text-blue-400" />}
                     </button>
                   </div>
                 </>
@@ -135,7 +118,7 @@ export function ChatHistory({ isCollapsed }: ChatHistoryProps) {
                       key={conv.id}
                       onClick={() => navigate(`/chat/${conv.id}`)}
                       className={`
-                        group flex items-center gap-3 px-3 py-2.5 rounded-xl cursor-pointer transition-all duration-200
+                        group flex items-center gap-3 px-3 py-1.5 rounded-xl cursor-pointer transition-all duration-200
                         ${isActive 
                           ? 'bg-gradient-to-b from-white/[0.08] to-white/[0.02] text-white shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)] border border-white/[0.05]' 
                           : 'text-white/40 hover:text-white/70 hover:bg-white/[0.03] border border-transparent'}

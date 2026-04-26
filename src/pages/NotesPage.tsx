@@ -5,6 +5,7 @@ import { CustomSelect } from '../components/ui/CustomSelect';
 import { useAppStore } from '../store';
 import { extractSingleItem } from '../engine/aiEngine';
 import { CustomDialog } from '../components/ui/CustomDialog';
+import { NoteAddModal } from '../components/notes/NoteAddModal';
 import { v4 as uuidv4 } from 'uuid';
 import type { Note } from '../store/types';
 
@@ -26,8 +27,6 @@ export function NotesPage() {
   }, [pendingOpenId, pendingOpenType, clearPendingOpen]);
   const [filter, setFilter] = useState<string>('All');
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [addText, setAddText] = useState('');
-  const [isExtracting, setIsExtracting] = useState(false);
   
   const activeNote = notes.find(n => n.id === activeNoteId);
 
@@ -49,37 +48,7 @@ export function NotesPage() {
     setActiveNoteId(null);
   };
 
-  const handleManualAdd = async () => {
-    if (!addText.trim()) return;
-    
-    setIsExtracting(true);
-    try {
-      const extracted = await extractSingleItem(addText, 'note');
-      if (extracted) {
-        const newNote: Note = {
-          id: uuidv4(),
-          title: extracted.title || 'Untitled Note',
-          content: extracted.content || addText,
-          category: extracted.category || 'General',
-          tags: extracted.tags || [],
-          linkedTaskIds: [],
-          linkedDecisionIds: [],
-          sourceMessageId: null,
-          projectId: extracted.projectId || null,
-          aiConfidence: 'high',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        };
-        addNote(newNote);
-        setAddText('');
-        setIsAddModalOpen(false);
-      }
-    } catch (error) {
-      console.error('Failed to extract note:', error);
-    } finally {
-      setIsExtracting(false);
-    }
-  };
+
 
   return (
     <div className="relative h-full flex overflow-hidden">
@@ -343,39 +312,10 @@ export function NotesPage() {
       )}
 
       {/* Manual Add Modal */}
-      {isAddModalOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="bg-[#111] border border-white/[0.05] rounded-2xl p-6 w-full max-w-lg shadow-2xl">
-            <h3 className="text-lg font-medium text-white mb-2">Add a Note</h3>
-            <p className="text-sm text-white/40 font-light mb-6">Type naturally. The AI will extract the title, content, and category.</p>
-            
-            <textarea
-              value={addText}
-              onChange={(e) => setAddText(e.target.value)}
-              placeholder="e.g., Had a meeting with the client today. We discussed the new API architecture and decided to use GraphQL..."
-              className="w-full h-32 bg-[#1a1a1a] border border-white/[0.05] rounded-xl p-4 text-white text-sm focus:outline-none focus:border-white/20 resize-none mb-6"
-              autoFocus
-            />
-
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={() => setIsAddModalOpen(false)}
-                className="px-4 py-2 text-sm text-white/50 hover:text-white transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleManualAdd}
-                disabled={!addText.trim() || isExtracting}
-                className="px-4 py-2 bg-white text-black hover:bg-white/90 text-sm font-medium rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50"
-              >
-                {isExtracting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-                {isExtracting ? 'Extracting...' : 'Add Note'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <NoteAddModal 
+        isOpen={isAddModalOpen} 
+        onClose={() => setIsAddModalOpen(false)} 
+      />
 
       <CustomDialog
         isOpen={!!noteToDelete}

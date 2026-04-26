@@ -9,6 +9,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import { CustomDialog } from '../ui/CustomDialog';
 import { TodayTasks } from '../today/TodayTasks';
 import { TaskAddModal } from '../tasks/TaskAddModal';
+import { TaskDetailModal } from '../tasks/TaskDetailModal';
+import { History } from 'lucide-react';
 
 function getGreeting(): string {
   const hour = new Date().getHours();
@@ -35,6 +37,7 @@ export function ConversationArea() {
   const navigate = useNavigate();
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+  const [activeTaskId, setActiveTaskId] = useState<string | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -152,11 +155,16 @@ export function ConversationArea() {
                {recentConversation && (
                  <Link 
                    to={`/chat/${recentConversation.id}`}
-                   className="flex items-center gap-2 mb-4 ml-1 w-fit group/recent"
+                   className="flex items-center gap-2.5 mb-4 ml-1 w-fit group/recent bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.05] px-3 py-1.5 rounded-full transition-all"
                  >
-                   <span className="text-[10px] text-white/30 font-medium uppercase tracking-widest group-hover/recent:text-white/60 transition-colors">
-                     Recent chat • {recentConversation.title}
-                   </span>
+                   <History className="w-3.5 h-3.5 text-white/40 group-hover/recent:text-white/60 transition-colors" />
+                   <div className="flex items-center gap-1.5 text-xs">
+                     <span className="text-white/40 font-medium">Recent chat</span>
+                     <span className="text-white/10 text-[8px]">•</span>
+                     <span className="text-white/80 font-medium truncate max-w-[200px] sm:max-w-[400px]">
+                       {recentConversation.title}
+                     </span>
+                   </div>
                  </Link>
                )}
                <MessageInput onSend={handleSendMessage} isInitial />
@@ -164,7 +172,10 @@ export function ConversationArea() {
 
             {/* Content Sections */}
             <div className="w-full max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-500 fill-mode-both">
-              <TodayTasks onAddTask={() => setIsTaskModalOpen(true)} />
+              <TodayTasks 
+                onAddTask={() => setIsTaskModalOpen(true)} 
+                onTaskClick={(id) => setActiveTaskId(id)}
+              />
             </div>
           </div>
         ) : (
@@ -198,11 +209,17 @@ export function ConversationArea() {
         </div>
       )}
 
-      {/* Root-level Task Modal to avoid clipping */}
+      {/* Root-level Modals to avoid clipping */}
       <TaskAddModal 
         isOpen={isTaskModalOpen} 
         onClose={() => setIsTaskModalOpen(false)} 
       />
+      
+      <TaskDetailModal 
+        taskId={activeTaskId} 
+        onClose={() => setActiveTaskId(null)} 
+      />
     </div>
   );
 }
+

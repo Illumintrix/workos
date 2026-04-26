@@ -273,19 +273,19 @@ export function MessageInput({ onSend, isInitial }: MessageInputProps) {
               if (idx !== -1) setMentionIndex(idx);
             }}
             className={`
-              w-full flex items-center gap-3 px-2 py-2 rounded-xl text-sm transition-all duration-200
-              ${isSelected ? 'bg-white/[0.08] text-white shadow-sm' : 'text-white/40 hover:bg-white/[0.04] hover:text-white/70'}
+              w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-200 group/item
+              ${isSelected ? 'bg-white/5 text-white shadow-sm' : 'text-white/60 hover:bg-white/[0.03] hover:text-white'}
             `}
             style={{ marginLeft: `${depth * 12}px`, width: `calc(100% - ${depth * 12}px)` }}
           >
             <div className={`
-              w-8 h-8 rounded-lg flex items-center justify-center transition-colors
+              w-7 h-7 rounded-lg flex items-center justify-center transition-colors
               ${isSelected ? 'bg-blue-500/20 text-blue-400' : 'bg-white/5 text-white/20'}
             `}>
-              <Folder className="w-4 h-4" />
+              <Folder className="w-3.5 h-3.5" />
             </div>
             <div className="flex flex-col items-start truncate">
-              <span className="font-medium truncate tracking-tight">{project.name}</span>
+              <span className="font-light truncate tracking-tight">{project.name}</span>
               <span className="text-[9px] text-white/20 uppercase tracking-widest">{project.type}</span>
             </div>
           </button>
@@ -307,13 +307,13 @@ export function MessageInput({ onSend, isInitial }: MessageInputProps) {
             setIsProjectPickerOpen(false);
           }}
           className={`
-            w-full flex items-center gap-2.5 px-2 py-2 rounded-xl text-[11px] transition-all duration-200
-            ${isSelected ? 'bg-white/[0.08] text-white shadow-sm' : 'text-white/40 hover:bg-white/[0.04] hover:text-white/70'}
+            w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-200 group/item
+            ${isSelected ? 'bg-white/5 text-white shadow-sm' : 'text-white/60 hover:bg-white/[0.03] hover:text-white'}
           `}
           style={{ marginLeft: `${depth * 12}px`, width: `calc(100% - ${depth * 12}px)` }}
         >
-          <Folder className={`w-3.5 h-3.5 ${isSelected ? 'text-blue-400' : 'text-white/10'}`} />
-          <span className="truncate tracking-tight font-medium">{project.name}</span>
+          <Folder className={`w-3.5 h-3.5 ${isSelected ? 'text-blue-400' : 'text-white/20'}`} />
+          <span className="truncate tracking-tight font-light">{project.name}</span>
         </button>
         {children.map(child => renderProjectOptions(child, depth + 1))}
       </React.Fragment>
@@ -328,17 +328,17 @@ export function MessageInput({ onSend, isInitial }: MessageInputProps) {
       {/* Mention Menu */}
       {showMentions && (
         <div 
-          className="fixed z-[100] w-72 bg-[#0f0f0f]/95 backdrop-blur-2xl border border-white/[0.08] rounded-[24px] shadow-[0_24px_48px_-12px_rgba(0,0,0,0.6)] overflow-hidden p-2 animate-in fade-in zoom-in-95 duration-200 mentions-menu-container"
+          className="fixed z-[100] w-72 bg-[#0a0a0a]/95 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.9)] overflow-hidden p-1.5 animate-in fade-in zoom-in-95 duration-200 mentions-menu-container"
           style={{ 
             top: `${mentionPosition.top}px`, 
             left: `${mentionPosition.left}px` 
           }}
         >
-          <div className="px-3 py-2 mb-2 border-b border-white/[0.04]">
+          <div className="px-3 py-2 mb-1.5 border-b border-white/[0.04]">
             <span className="text-[10px] font-medium text-white/20 uppercase tracking-[0.2em]">Select Project</span>
           </div>
           
-          <div className="max-h-64 overflow-y-auto hide-scrollbar space-y-0.5">
+          <div className="max-h-64 overflow-y-auto hide-scrollbar flex flex-col gap-0.5">
             {projects.filter(p => !p.parentId).map(p => renderMentionOptions(p))}
             {filteredProjects.length === 0 && (
               <div className="px-4 py-10 text-center">
@@ -395,10 +395,58 @@ export function MessageInput({ onSend, isInitial }: MessageInputProps) {
                   setShowMentions(true);
                   setMentionIndex(0);
                   
-                  // Simple position calculation (bottom of textarea)
+                  // Accurate caret position calculation using a mirror element
                   if (textareaRef.current) {
-                    const rect = textareaRef.current.getBoundingClientRect();
-                    setMentionPosition({ top: rect.bottom + 8, left: rect.left });
+                    const textarea = textareaRef.current;
+                    const cursorPosition = textarea.selectionStart;
+                    const textBeforeCursor = textarea.value.slice(0, cursorPosition);
+                    
+                    const rect = textarea.getBoundingClientRect();
+                    const div = document.createElement('div');
+                    const style = window.getComputedStyle(textarea);
+                    
+                    // Copy all layout and font styles exactly
+                    const stylesToCopy = [
+                      'fontFamily', 'fontSize', 'fontWeight', 'fontStyle', 'letterSpacing',
+                      'textTransform', 'wordSpacing', 'textIndent', 'whiteSpace', 'wordBreak',
+                      'lineHeight', 'paddingLeft', 'paddingTop', 'paddingRight', 'paddingBottom',
+                      'borderWidth', 'boxSizing', 'width', 'textAlign', 'textRendering'
+                    ];
+                    
+                    stylesToCopy.forEach(prop => {
+                      (div.style as any)[prop] = (style as any)[prop];
+                    });
+                    
+                    div.style.position = 'fixed';
+                    div.style.visibility = 'hidden';
+                    div.style.top = rect.top + 'px';
+                    div.style.left = rect.left + 'px';
+                    div.style.height = 'auto';
+                    div.style.whiteSpace = 'pre-wrap';
+                    div.style.wordWrap = 'break-word';
+                    
+                    // Mirror the content exactly
+                    div.textContent = textBeforeCursor;
+                    const span = document.createElement('span');
+                    span.textContent = '|';
+                    div.appendChild(span);
+                    
+                    document.body.appendChild(div);
+                    
+                    const spanRect = span.getBoundingClientRect();
+                    
+                    // Calculate position relative to viewport
+                    let top = spanRect.top + 28;
+                    let left = spanRect.left;
+                    
+                    // Boundary checks
+                    const menuWidth = 288;
+                    if (left + menuWidth > window.innerWidth) {
+                      left = window.innerWidth - menuWidth - 20;
+                    }
+                    
+                    setMentionPosition({ top, left });
+                    document.body.removeChild(div);
                   }
                 } else {
                   setShowMentions(false);
@@ -462,26 +510,26 @@ export function MessageInput({ onSend, isInitial }: MessageInputProps) {
                   </button>
 
                   {isProjectPickerOpen && (
-                    <div className="absolute bottom-full left-0 mb-3 w-64 bg-[#0f0f0f]/95 backdrop-blur-2xl border border-white/[0.08] rounded-[24px] shadow-[0_24px_48px_-12px_rgba(0,0,0,0.6)] overflow-hidden p-2 z-50 animate-in fade-in slide-in-from-bottom-2 duration-200">
-                      <div className="px-3 py-2 border-b border-white/[0.04] mb-2">
+                    <div className="absolute bottom-full left-0 mb-3 w-64 bg-[#0a0a0a]/95 backdrop-blur-2xl border border-white/10 rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.9)] overflow-hidden p-1.5 z-50 animate-in fade-in slide-in-from-bottom-2 duration-200">
+                      <div className="px-3 py-2 border-b border-white/[0.04] mb-1.5">
                         <span className="text-[10px] font-medium text-white/20 uppercase tracking-[0.2em]">Select Project</span>
                       </div>
-                      <div className="max-h-64 overflow-y-auto hide-scrollbar space-y-0.5">
+                      <div className="max-h-64 overflow-y-auto hide-scrollbar flex flex-col gap-0.5">
                         <button
                           onClick={() => {
                             setSelectedProjectId(null);
                             setIsProjectPickerOpen(false);
                           }}
                           className={`
-                            w-full flex items-center gap-2.5 px-2 py-2 rounded-xl text-[11px] transition-all duration-200
-                            ${!selectedProjectId ? 'bg-white/[0.08] text-white shadow-sm' : 'text-white/40 hover:bg-white/[0.04] hover:text-white/70'}
+                            w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all duration-200 group/item
+                            ${!selectedProjectId ? 'bg-white/5 text-white shadow-sm' : 'text-white/60 hover:bg-white/[0.03] hover:text-white'}
                           `}
                         >
-                          <Folder className="w-3.5 h-3.5 text-white/10" />
-                          <span className="tracking-tight font-medium">Global Context (Default)</span>
+                          <Folder className="w-3.5 h-3.5 text-white/20" />
+                          <span className="tracking-tight font-light">Global Context (Default)</span>
                         </button>
                         
-                        <div className="pt-0.5 mt-0.5 border-t border-white/[0.02]">
+                        <div className="pt-0.5 mt-0.5 border-t border-white/[0.02] flex flex-col gap-0.5">
                           {projects.filter(p => !p.parentId).map(p => renderProjectOptions(p))}
                         </div>
                       </div>

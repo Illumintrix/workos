@@ -23,41 +23,40 @@ export function getTaskTimeBucket(dueDate: string | null, status: string): TimeB
 }
 
 export function formatRelativeDueDate(dueDate: string | null): { text: string; colorClass: string } {
-  if (!dueDate) return { text: 'No date', colorClass: 'text-white/10' };
+  if (!dueDate) return { text: 'No date', colorClass: 'text-white/20' };
 
   const date = parseISO(dueDate);
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const yesterday = addDays(today, -1);
   const tomorrow = addDays(today, 1);
+  const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
 
-  if (isYesterday(date)) {
-    return { text: 'Yesterday', colorClass: 'text-red-400/90' };
-  }
-
-  if (isToday(date)) {
-    return { text: 'Today', colorClass: 'text-amber-400/90' };
-  }
-
-  if (isTomorrow(date)) {
-    return { text: 'Tomorrow', colorClass: 'text-white/40' };
-  }
-
-  if (isBefore(date, yesterday)) {
+  // Overdue
+  if (isBefore(date, today)) {
     return { 
-      text: format(date, 'MMM d, yyyy'), 
-      colorClass: 'text-red-400/80' 
+      text: isYesterday(date) ? 'Yesterday' : format(date, 'MMM d, yyyy'), 
+      colorClass: 'text-red-400' 
     };
   }
 
-  // Future days
-  const diff = Math.ceil((date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-  if (diff > 0 && diff <= 14) {
-    return { text: `In ${diff} days`, colorClass: 'text-white/30' };
+  // Today
+  if (isToday(date)) {
+    return { text: 'Today', colorClass: 'text-amber-400' };
   }
 
+  // This Week
+  if (isBefore(date, addDays(weekEnd, 1))) {
+    const diff = Math.ceil((date.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    return { 
+      text: isTomorrow(date) ? 'Tomorrow' : `In ${diff} days`, 
+      colorClass: 'text-amber-400/80' 
+    };
+  }
+
+  // Upcoming
   return { 
     text: format(date, 'MMM d, yyyy'), 
-    colorClass: 'text-white/20' 
+    colorClass: 'text-white/70' 
   };
 }

@@ -1,20 +1,53 @@
+import { useState } from 'react';
 import { useAppStore } from '../../store';
-import { Plus, ChevronRight } from 'lucide-react';
+import { Plus, ChevronRight, Check } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { formatRelativeDueDate } from '../../utils/dateUtils';
+import { TaskDetailModal } from '../tasks/TaskDetailModal';
+import type { TaskStatus } from '../../store/types';
 
 interface TodayTasksProps {
   onAddTask?: () => void;
+  onTaskClick?: (taskId: string) => void;
 }
 
-export function TodayTasks({ onAddTask }: TodayTasksProps) {
+export function TodayTasks({ onAddTask, onTaskClick }: TodayTasksProps) {
   const { tasks, updateTask } = useAppStore();
   const navigate = useNavigate();
+  const [completingTasks, setCompletingTasks] = useState<Set<string>>(new Set());
   
   const today = new Date().toISOString().split('T')[0];
-  const todayTasks = tasks.filter(
-    (t) => t.status !== 'completed' && t.dueDate && t.dueDate <= today
-  );
+  
+  const todayTasks = tasks.filter((t) => {
+    // Show tasks that are not marked completed in store
+    // We NO LONGER filter out tasks that are in the completingTasks set here,
+    // so they stay visible during the buffer period.
+    return t.status !== 'completed' && t.dueDate && t.dueDate <= today;
+  });
+
+  const toggleTaskCompletion = (taskId: string, currentStatus: TaskStatus) => {
+    if (currentStatus === 'completed') {
+      updateTask(taskId, { status: 'to_do' });
+    } else {
+      setCompletingTasks(prev => {
+        const next = new Set(prev);
+        next.add(taskId);
+        return next;
+      });
+      
+      setTimeout(() => {
+        setCompletingTasks(prev => {
+          if (prev.has(taskId)) {
+            updateTask(taskId, { status: 'completed' });
+            const next = new Set(prev);
+            next.delete(taskId);
+            return next;
+          }
+          return prev;
+        });
+      }, 1500);
+    }
+  };
 
   if (todayTasks.length === 0) return null;
 
@@ -55,26 +88,40 @@ export function TodayTasks({ onAddTask }: TodayTasksProps) {
       <div className="flex flex-col">
         {sortedTasks.slice(0, 5).map((task) => {
           const { text: dueText, colorClass: dueColor } = formatRelativeDueDate(task.dueDate);
+          const isPendingCompletion = completingTasks.has(task.id);
           
           return (
             <div
               key={task.id}
-              className="group flex items-center justify-between py-4 border-b border-white/[0.03] hover:bg-white/[0.01] transition-all duration-300 px-1"
+              onClick={() => onTaskClick?.(task.id)}
+              className="group flex items-center justify-between py-4 border-b border-white/[0.03] hover:bg-white/[0.01] transition-all duration-300 px-1 cursor-pointer"
             >
               <div className="flex items-center gap-4 flex-1 min-w-0">
                 <button
-                  onClick={() => updateTask(task.id, { status: 'completed' })}
-                  className="w-5 h-5 rounded-full border border-white/10 hover:border-white/30 flex items-center justify-center transition-all bg-white/[0.02]"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleTaskCompletion(task.id, task.status);
+                  }}
+                  className={`w-5 h-5 rounded-full border flex items-center justify-center transition-all duration-300 shrink-0 ${
+                    isPendingCompletion
+                      ? 'bg-[#0a0a0a] border-[#8affb1]/30 text-[#8affb1] shadow-[0_0_15px_rgba(138,255,177,0.15)]'
+                      : 'bg-transparent border-white/10 hover:border-white/30'
+                  }`}
+                  style={{
+                    boxShadow: isPendingCompletion
+                      ? 'inset 0 1px 1px rgba(255,255,255,0.05), 0 4px 12px rgba(0,0,0,0.5)'
+                      : 'none'
+                  }}
                 >
-                  <div className="w-2.5 h-2.5 rounded-full bg-white/0 group-hover:bg-white/5 transition-all" />
+                  {isPendingCompletion && <Check className="w-3 h-3" strokeWidth={4} />}
                 </button>
-                <span className="text-base font-light tracking-tight truncate text-white/80">
+                <span className={`text-base font-light tracking-tight truncate transition-all duration-500 ${isPendingCompletion ? 'text-white/20 line-through' : 'text-white/80'}`}>
                   {task.title}
                 </span>
               </div>
               
               <div className="flex items-center gap-4 shrink-0">
-                <span className={`text-sm font-normal tracking-tight ${dueColor}`}>
+                <span className={`text-sm font-normal tracking-tight ${dueColor} ${isPendingCompletion ? 'opacity-30' : ''}`}>
                   {dueText}
                 </span>
               </div>
@@ -85,3 +132,5 @@ export function TodayTasks({ onAddTask }: TodayTasksProps) {
     </div>
   );
 }
+
+

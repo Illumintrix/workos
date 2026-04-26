@@ -16,13 +16,14 @@ import {
   Layers,
   LogOut,
   User as UserIcon,
+  PanelLeftClose,
+  PanelLeftOpen,
 } from 'lucide-react';
 import { SettingsModal } from '../settings/SettingsModal';
 import { ChatHistory } from './ChatHistory';
 
 const navItems = [
   { path: '/app', label: 'Home', icon: Home },
-  { path: '/projects', label: 'Projects', icon: Layers },
   { path: '/inbox', label: 'Inbox', icon: Inbox },
   { path: '/tasks', label: 'Tasks', icon: CheckSquare },
   { path: '/notes', label: 'Notes', icon: FileText },
@@ -53,10 +54,21 @@ export function Sidebar() {
         e.preventDefault();
         setSearchModalOpen(true);
       }
+      if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement).tagName)) {
+        e.preventDefault();
+        setSearchModalOpen(true);
+      }
+      if ((e.metaKey || e.ctrlKey) && e.key === '.') {
+        e.preventDefault();
+        toggleSidebar();
+      }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [setSearchModalOpen]);
+  }, [setSearchModalOpen, toggleSidebar]);
+
+  const [isLogoHovered, setIsLogoHovered] = useState(false);
+  const [isCollapseHovered, setIsCollapseHovered] = useState(false);
 
   return (
     <>
@@ -91,46 +103,114 @@ export function Sidebar() {
         />
 
         {/* Logo / Brand */}
-        <div className="relative z-10 flex items-center gap-3 px-5 py-5 border-b border-white/[0.04]">
-          <div
-            className="w-8 h-8 rounded-xl bg-gradient-to-b from-[#2a2a2a] to-[#111] flex items-center justify-center shrink-0"
-            style={{
-              boxShadow: 'inset 0 1px 1px rgba(255,255,255,0.2), inset 0 -1px 2px rgba(0,0,0,0.8), 0 2px 6px rgba(0,0,0,0.6)',
-              border: '1px solid rgba(255,255,255,0.08)',
-            }}
-          >
-            <Layers className="w-4 h-4 text-white/90" style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.8))' }} />
-          </div>
-          {!isSidebarCollapsed && (
-            <span
-              className="text-sm font-normal text-white tracking-tight"
-              style={{ textShadow: '0 1px 2px rgba(0,0,0,0.8)' }}
+        <div className={`relative z-10 flex items-center h-[60px] px-5 border-b border-white/[0.04] transition-all duration-300 ${isSidebarCollapsed ? 'justify-center' : 'justify-between'}`}>
+          <div className="flex items-center gap-3 overflow-hidden">
+            <button
+              onMouseEnter={() => setIsLogoHovered(true)}
+              onMouseLeave={() => setIsLogoHovered(false)}
+              onClick={() => isSidebarCollapsed && toggleSidebar()}
+              className={`
+                relative w-8 h-8 rounded-xl bg-gradient-to-b from-[#2a2a2a] to-[#111] flex items-center justify-center shrink-0 transition-all duration-300
+                ${isSidebarCollapsed ? 'hover:scale-110 active:scale-95 cursor-pointer' : 'cursor-default'}
+              `}
+              style={{
+                boxShadow: 'inset 0 1px 1px rgba(255,255,255,0.2), inset 0 -1px 2px rgba(0,0,0,0.8), 0 2px 6px rgba(0,0,0,0.6)',
+                border: '1px solid rgba(255,255,255,0.08)',
+              }}
             >
-              Vela
-            </span>
+              {isSidebarCollapsed && isLogoHovered ? (
+                <PanelLeftOpen className="w-4 h-4 text-white/90 animate-in fade-in zoom-in-50 duration-200" />
+              ) : (
+                <Layers className="w-4 h-4 text-white/90" style={{ filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.8))' }} />
+              )}
+            </button>
+            
+            {!isSidebarCollapsed && (
+              <span
+                className="text-sm font-normal text-white tracking-tight animate-in fade-in slide-in-from-left-2 duration-300"
+                style={{ textShadow: '0 1px 2px rgba(0,0,0,0.8)' }}
+              >
+                Vela
+              </span>
+            )}
+          </div>
+
+          {!isSidebarCollapsed && (
+            <div className="relative group">
+              <button
+                onClick={toggleSidebar}
+                onMouseEnter={() => setIsCollapseHovered(true)}
+                onMouseLeave={() => setIsCollapseHovered(false)}
+                className="p-1.5 rounded-lg text-white/30 hover:text-white hover:bg-white/5 transition-all duration-200"
+              >
+                <PanelLeftClose className="w-4 h-4" />
+              </button>
+
+              {/* Tooltip */}
+              {isCollapseHovered && (
+                <div 
+                  className="absolute left-full ml-4 top-1/2 -translate-y-1/2 flex items-center gap-2 px-3 py-1.5 bg-[#0a0a0a] border border-white/10 rounded-lg shadow-2xl z-[100] whitespace-nowrap animate-in fade-in slide-in-from-left-1 duration-200"
+                >
+                  <span className="text-xs text-white/80 font-light">Collapse sidebar</span>
+                  <div className="flex gap-0.5">
+                    <span className="flex items-center justify-center w-4 h-4 rounded bg-white/10 text-[10px] text-white/60 font-mono">⌘</span>
+                    <span className="flex items-center justify-center w-4 h-4 rounded bg-white/10 text-[10px] text-white/60 font-mono">.</span>
+                  </div>
+                  {/* Arrow */}
+                  <div className="absolute right-full top-1/2 -translate-y-1/2 border-[6px] border-transparent border-r-[#0a0a0a] z-10" />
+                  <div className="absolute right-full top-1/2 -translate-y-1/2 border-[7px] border-transparent border-r-white/10 -mr-[1px]" />
+                </div>
+              )}
+            </div>
           )}
         </div>
 
-        {/* Navigation */}
-        <nav className="relative z-10 flex flex-col gap-1 px-3 py-4 overflow-y-auto hide-scrollbar">
-          {/* Search Button at the top */}
-          <button
-            onClick={() => setSearchModalOpen(true)}
-            className={`
-              flex items-center gap-3 w-full rounded-xl transition-all duration-200 mb-2
-              ${isSidebarCollapsed ? 'p-3 justify-center' : 'px-3 py-2.5'}
-              text-white/40 hover:text-white/70 hover:bg-white/[0.03] border border-transparent
-            `}
-          >
-            <Search className="w-[18px] h-[18px] shrink-0" />
-            {!isSidebarCollapsed && (
-              <div className="flex-1 flex items-center justify-between">
-                <span className="text-sm tracking-tight font-light">Search</span>
-                <span className="text-[10px] text-white/20 bg-white/5 px-1.5 py-0.5 rounded border border-white/5 font-mono">⌘ K</span>
-              </div>
-            )}
-          </button>
+        {/* Utility Header — Only visible when expanded */}
+        {!isSidebarCollapsed && (
+          <div className="px-3 pt-4 pb-2 flex gap-2 animate-in fade-in slide-in-from-top-2 duration-500">
+            {/* Project Button - Wide Pill */}
+            <button
+              onClick={() => navigate('/projects')}
+              className="
+                flex-1 flex items-center gap-2.5 px-3 py-2 rounded-xl
+                bg-gradient-to-b from-white/[0.05] to-transparent
+                border border-white/[0.08]
+                hover:bg-white/[0.08] hover:border-white/[0.12]
+                transition-all group active:scale-[0.98]
+              "
+              style={{
+                boxShadow: '0 2px 8px -2px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.05)',
+              }}
+            >
+              <Layers className="w-3.5 h-3.5 text-white/40 group-hover:text-white/70 transition-colors" />
+              <span className="text-[12px] font-medium text-white/50 group-hover:text-white/80 tracking-tight">Projects</span>
+            </button>
 
+            {/* Search Button - Compact Pill */}
+            <button
+              onClick={() => setSearchModalOpen(true)}
+              className="
+                flex items-center gap-2 px-3 py-2 rounded-xl
+                bg-gradient-to-b from-white/[0.05] to-transparent
+                border border-white/[0.08]
+                hover:bg-white/[0.08] hover:border-white/[0.12]
+                transition-all group active:scale-[0.98]
+              "
+              style={{
+                boxShadow: '0 2px 8px -2px rgba(0,0,0,0.5), inset 0 1px 1px rgba(255,255,255,0.05)',
+              }}
+            >
+              <Search className="w-3.5 h-3.5 text-white/40 group-hover:text-white/70 transition-colors" />
+              <div className="flex gap-0.5 opacity-30 group-hover:opacity-100 transition-opacity">
+                <span className="flex items-center justify-center w-4 h-4 rounded-md bg-white/10 text-[9px] text-white/60 font-mono border border-white/5 shadow-sm">⌘</span>
+                <span className="flex items-center justify-center w-4 h-4 rounded-md bg-white/10 text-[9px] text-white/60 font-mono border border-white/5 shadow-sm">K</span>
+              </div>
+            </button>
+          </div>
+        )}
+
+        {/* Navigation */}
+        <nav className="relative z-10 flex flex-col gap-1 px-3 pt-0 pb-4 overflow-y-auto hide-scrollbar">
           {navItems.map((item) => {
             const isActive = location.pathname === item.path;
             const Icon = item.icon;
@@ -157,6 +237,7 @@ export function Sidebar() {
             );
           })}
         </nav>
+
 
         {/* Chat History */}
         <div className="flex-1 overflow-y-auto hide-scrollbar">
@@ -244,14 +325,7 @@ export function Sidebar() {
           </div>
         </div>
 
-        {/* Collapse toggle — desktop only */}
-        <button
-          onClick={toggleSidebar}
-          className="hidden lg:flex absolute -right-3 top-7 w-6 h-6 rounded-full bg-[#1a1a1a] border border-white/[0.08] items-center justify-center text-white/50 hover:text-white hover:bg-[#222] transition-all z-50"
-          style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.5)' }}
-        >
-          <ChevronLeft className={`w-3 h-3 transition-transform duration-300 ${isSidebarCollapsed ? 'rotate-180' : ''}`} />
-        </button>
+
       </aside>
     </>
   );

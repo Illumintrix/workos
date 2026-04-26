@@ -70,26 +70,20 @@ export function ChatBrowser() {
       />
 
       {/* Header */}
-      <div className="relative z-10 px-6 py-6 border-b border-white/[0.04] flex items-center justify-between">
+      <div className="relative z-10 h-[60px] px-5 border-b border-white/[0.04] flex items-center justify-between">
         <h2 className="text-[10px] font-medium text-white/40 uppercase tracking-[0.2em]">All Chats</h2>
-        <button 
-          onClick={() => setChatBrowserOpen(false)}
-          className="p-1 rounded-lg text-white/20 hover:text-white/60 hover:bg-white/5 transition-all"
-        >
-          <X className="w-4 h-4" />
-        </button>
       </div>
 
       {/* Toolbar */}
       <div className="relative z-30 px-4 py-6 flex flex-col gap-4 border-b border-white/[0.02]">
         <div className="relative group">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/20 group-focus-within:text-white/40 transition-colors" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/40 group-focus-within:text-white/60 transition-colors" />
           <input 
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search conversations..."
-            className="w-full bg-white/[0.02] border border-white/[0.05] rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder:text-white/10 focus:outline-none focus:border-white/10 transition-all font-light"
+            className="w-full bg-white/[0.02] border border-white/[0.05] rounded-xl pl-10 pr-4 py-2.5 text-xs text-white placeholder:text-white/30 focus:outline-none focus:border-white/10 transition-all font-light"
           />
         </div>
         
@@ -97,14 +91,14 @@ export function ChatBrowser() {
           <button 
             onClick={() => setIsFilterOpen(!isFilterOpen)}
             className={`flex items-center justify-between w-full px-4 py-2.5 rounded-xl border transition-all text-[11px] font-light
-              ${selectedProjectId || isFilterOpen ? 'bg-white/5 border-white/10 text-white' : 'bg-white/[0.01] border-white/[0.03] text-white/30 hover:text-white/50'}
+              ${selectedProjectId || isFilterOpen ? 'bg-white/5 border-white/10 text-white' : 'bg-white/[0.01] border-white/[0.03] text-white/50 hover:text-white/70'}
             `}
           >
             <div className="flex items-center gap-2">
-              <Filter className="w-3 h-3 opacity-40" />
+              <Filter className="w-3 h-3 opacity-60" />
               <span className="truncate">{selectedProjectId ? projects.find(p => p.id === selectedProjectId)?.name : 'Filter by Project'}</span>
             </div>
-            <ChevronDown className={`w-3 h-3 opacity-40 transition-transform duration-300 ${isFilterOpen ? 'rotate-180' : ''}`} />
+            <ChevronDown className={`w-3 h-3 opacity-60 transition-transform duration-300 ${isFilterOpen ? 'rotate-180' : ''}`} />
           </button>
 
             {isFilterOpen && (
@@ -163,22 +157,16 @@ export function ChatBrowser() {
                   setChatBrowserOpen(false);
                 }}
                 className={`
-                  group flex flex-col gap-1 px-4 py-4 rounded-2xl transition-all duration-300 text-left border
+                  group flex items-center gap-3 px-3 py-1.5 rounded-xl transition-all duration-200 text-left border
                   ${isActive 
-                    ? 'bg-gradient-to-b from-white/[0.08] to-white/[0.02] border-white/[0.08] shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]' 
-                    : 'bg-transparent border-transparent hover:bg-white/[0.02] hover:border-white/[0.04]'}
+                    ? 'bg-gradient-to-b from-white/[0.08] to-white/[0.02] border-white/[0.05] shadow-[inset_0_1px_1px_rgba(255,255,255,0.1)]' 
+                    : 'bg-transparent border-transparent hover:bg-white/[0.03] hover:border-transparent'}
                 `}
               >
-                <h3 className={`text-sm tracking-tight truncate transition-colors ${isActive ? 'text-white font-medium' : 'text-white/60 font-light group-hover:text-white/90'}`}>
-                  {conv.title}
-                </h3>
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] text-white/20 font-light tracking-wide uppercase">
-                    {new Date(conv.lastMessageAt).toLocaleDateString(undefined, { 
-                      day: 'numeric',
-                      month: 'short'
-                    })}
-                  </span>
+                <div className="flex-1 min-w-0">
+                  <h3 className={`text-sm tracking-tight truncate transition-colors ${isActive ? 'text-white font-medium' : 'text-white/40 font-light group-hover:text-white/70'}`}>
+                    {conv.title}
+                  </h3>
                 </div>
               </button>
             );

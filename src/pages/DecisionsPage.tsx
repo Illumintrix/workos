@@ -5,6 +5,7 @@ import { CustomSelect } from '../components/ui/CustomSelect';
 import { CustomDialog } from '../components/ui/CustomDialog';
 import { useAppStore } from '../store';
 import { extractSingleItem } from '../engine/aiEngine';
+import { DecisionAddModal } from '../components/decisions/DecisionAddModal';
 import { v4 as uuidv4 } from 'uuid';
 import type { Decision } from '../store/types';
 
@@ -34,40 +35,8 @@ export function DecisionsPage() {
     setActiveDecisionId(decision.id);
   };
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
-  const [addText, setAddText] = useState('');
-  const [isExtracting, setIsExtracting] = useState(false);
 
-  const handleManualAdd = async () => {
-    if (!addText.trim()) return;
-    setIsExtracting(true);
-    try {
-      const extracted = await extractSingleItem(addText, 'decision');
-      if (extracted && extracted.title) {
-        addDecision({
-          id: uuidv4(),
-          title: extracted.title,
-          reasoning: extracted.reasoning || '',
-          alternatives: extracted.alternatives || [],
-          tradeoffs: extracted.tradeoffs || '',
-          risks: extracted.risks || '',
-          projectId: extracted.projectId || null,
-          tags: extracted.tags || [],
-          linkedTaskIds: [],
-          linkedNoteIds: [],
-          sourceMessageId: null,
-          aiConfidence: 'high',
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        });
-        setIsAddModalOpen(false);
-        setAddText('');
-      }
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setIsExtracting(false);
-    }
-  };
+
 
 
   const closeDecision = () => {
@@ -345,39 +314,10 @@ export function DecisionsPage() {
       )}
 
       {/* Manual Add Modal */}
-      {isAddModalOpen && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
-          <div className="bg-[#111] border border-white/[0.05] rounded-2xl p-6 w-full max-w-lg shadow-2xl">
-            <h3 className="text-lg font-medium text-white mb-2">Log a Decision</h3>
-            <p className="text-sm text-white/40 font-light mb-6">Type naturally. The AI will extract the decision, reasoning, tradeoffs, and risks.</p>
-            
-            <textarea
-              value={addText}
-              onChange={(e) => setAddText(e.target.value)}
-              placeholder="e.g., We decided to use Postgres instead of MongoDB because we need strict ACID compliance for transactions. The tradeoff is schema rigidity, but the risk of data inconsistency with Mongo was too high."
-              className="w-full h-32 bg-[#1a1a1a] border border-white/[0.05] rounded-xl p-4 text-white text-sm focus:outline-none focus:border-white/20 resize-none mb-6"
-              autoFocus
-            />
-
-            <div className="flex justify-end gap-3">
-              <button
-                onClick={() => setIsAddModalOpen(false)}
-                className="px-4 py-2 text-sm text-white/50 hover:text-white transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleManualAdd}
-                disabled={!addText.trim() || isExtracting}
-                className="px-4 py-2 bg-white text-black hover:bg-white/90 text-sm font-medium rounded-lg transition-colors flex items-center gap-2 disabled:opacity-50"
-              >
-                {isExtracting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" />}
-                {isExtracting ? 'Extracting...' : 'Log Decision'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <DecisionAddModal 
+        isOpen={isAddModalOpen} 
+        onClose={() => setIsAddModalOpen(false)} 
+      />
 
       <CustomDialog
         isOpen={!!decisionToDelete}

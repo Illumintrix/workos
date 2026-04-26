@@ -1,17 +1,18 @@
 import { useState } from 'react';
-import { X, AudioLines, Loader2, Plus } from 'lucide-react';
+import { X, AudioLines, Loader2, Plus, FileText } from 'lucide-react';
 import { useAppStore } from '../../store';
 import { extractSingleItem } from '../../engine/aiEngine';
 import { v4 as uuidv4 } from 'uuid';
 import { CustomDialog } from '../ui/CustomDialog';
+import type { Note } from '../../store/types';
 
-interface TaskAddModalProps {
+interface NoteAddModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export function TaskAddModal({ isOpen, onClose }: TaskAddModalProps) {
-  const { addTask } = useAppStore();
+export function NoteAddModal({ isOpen, onClose }: NoteAddModalProps) {
+  const { addNote } = useAppStore();
   const [addText, setAddText] = useState('');
   const [isExtracting, setIsExtracting] = useState(false);
   const [isListening, setIsListening] = useState(false);
@@ -44,25 +45,23 @@ export function TaskAddModal({ isOpen, onClose }: TaskAddModalProps) {
     if (!addText.trim()) return;
     setIsExtracting(true);
     try {
-      const extracted = await extractSingleItem(addText, 'task');
-      if (extracted && extracted.title) {
-        addTask({
+      const extracted = await extractSingleItem(addText, 'note');
+      if (extracted) {
+        const newNote: Note = {
           id: uuidv4(),
-          title: extracted.title,
-          description: extracted.description || '',
-          status: extracted.status || 'to_do',
-          priority: extracted.priority || 'medium',
-          dueDate: extracted.dueDate || null,
-          projectId: extracted.projectId || null,
+          title: extracted.title || 'Untitled Note',
+          content: extracted.content || addText,
+          category: extracted.category || 'General',
           tags: extracted.tags || [],
           linkedTaskIds: [],
-          linkedNoteIds: [],
           linkedDecisionIds: [],
           sourceMessageId: null,
+          projectId: extracted.projectId || null,
           aiConfidence: 'high',
           createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        });
+          updatedAt: new Date().toISOString(),
+        };
+        addNote(newNote);
         onClose();
         setAddText('');
       }
@@ -101,14 +100,19 @@ export function TaskAddModal({ isOpen, onClose }: TaskAddModalProps) {
             <X className="w-5 h-5" />
           </button>
           
-          <h3 
-            className="text-xl font-normal text-white mb-2 tracking-tight z-10"
-            style={{ textShadow: '0 1px 2px rgba(0,0,0,0.8)' }}
-          >
-            Add a Task
-          </h3>
+          <div className="flex items-center gap-3 mb-2 z-10">
+            <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
+              <FileText className="w-4 h-4 text-blue-400" />
+            </div>
+            <h3 
+              className="text-xl font-normal text-white tracking-tight"
+              style={{ textShadow: '0 1px 2px rgba(0,0,0,0.8)' }}
+            >
+              Add a Note
+            </h3>
+          </div>
           <p className="text-sm text-white/40 font-light mb-8 leading-relaxed z-10">
-            Type naturally. The AI will extract the title, due date, priority, and project.
+            Type naturally. The AI will extract the title, content, and category.
           </p>
           
           <div className="relative mb-8 group z-10">
@@ -116,7 +120,7 @@ export function TaskAddModal({ isOpen, onClose }: TaskAddModalProps) {
             <textarea
               value={addText}
               onChange={(e) => setAddText(e.target.value)}
-              placeholder="e.g., Need to finish the duplicate management PRD by Friday, high priority for the Growth project."
+              placeholder="e.g., Had a meeting with the client today. We discussed the new API architecture and decided to use GraphQL..."
               className="relative w-full h-36 bg-black/40 border border-white/[0.05] rounded-2xl p-5 pr-14 text-white text-sm focus:outline-none focus:border-white/20 resize-none shadow-[inset_0_2px_4px_rgba(0,0,0,0.4)] transition-all placeholder:text-white/10 font-light leading-relaxed"
               autoFocus
             />
@@ -153,7 +157,7 @@ export function TaskAddModal({ isOpen, onClose }: TaskAddModalProps) {
               }}
             >
               {isExtracting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Plus className="w-4 h-4" strokeWidth={3} />}
-              {isExtracting ? 'Extracting...' : 'Add Task'}
+              {isExtracting ? 'Extracting...' : 'Add Note'}
             </button>
           </div>
         </div>
