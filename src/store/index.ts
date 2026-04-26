@@ -36,6 +36,7 @@ interface AppState {
   selectedConversationId: string | null;
   chatSortOrder: 'recently_updated' | 'recently_created';
   isChatBrowserOpen: boolean;
+  isApiKeyModalOpen: boolean;
 
   // Actions
   setSettingsOpen: (open: boolean) => void;
@@ -105,6 +106,7 @@ interface AppState {
   setSearchModalOpen: (open: boolean) => void;
   setChatSortOrder: (order: 'recently_updated' | 'recently_created') => void;
   setChatBrowserOpen: (open: boolean) => void;
+  setApiKeyModalOpen: (open: boolean) => void;
 
   // Bulk action from AI extractions
   processExtractions: (extractions: AIExtractions, messageId: string) => Promise<void>;
@@ -143,6 +145,7 @@ export const useAppStore = create<AppState>()(
       selectedConversationId: null,
       chatSortOrder: 'recently_updated',
       isChatBrowserOpen: false,
+      isApiKeyModalOpen: false,
 
       // UI State
       rightPanelContent: null,
@@ -900,6 +903,7 @@ export const useAppStore = create<AppState>()(
       setSearchModalOpen: (open) => set({ isSearchModalOpen: open }),
       setChatSortOrder: (order) => set({ chatSortOrder: order }),
       setChatBrowserOpen: (open) => set({ isChatBrowserOpen: open }),
+      setApiKeyModalOpen: (open) => set({ isApiKeyModalOpen: open }),
 
       toggleSidebar: () =>
         set((state) => ({

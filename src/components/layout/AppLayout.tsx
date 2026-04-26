@@ -6,6 +6,7 @@ import { useAppStore } from '../../store';
 import { Menu } from 'lucide-react';
 import { SearchModal } from '../search/SearchModal';
 import { ChatBrowser } from '../conversation/ChatBrowser';
+import { ApiKeyPromptModal } from '../settings/ApiKeyPromptModal';
 
 export function AppLayout() {
   const { toggleSidebar } = useAppStore();
@@ -14,6 +15,7 @@ export function AppLayout() {
     <div className="relative min-h-screen text-white antialiased font-sans bg-[#050505]">
       <AmbientBackground />
       <SearchModal />
+      <ApiKeyPromptModal />
       <div className="relative z-10 flex h-screen overflow-hidden">
         {/* Zone 1: Left Sidebar */}
         <Sidebar />

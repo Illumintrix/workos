@@ -60,7 +60,7 @@ export function MessageInput({ onSend, isInitial }: MessageInputProps) {
   const shouldSendOnStop = useRef(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const recognitionRef = useRef<SpeechRecognition | null>(null);
-  const { projects, isAIProcessing, selectedProjectId, setSelectedProjectId } = useAppStore();
+  const { projects, isAIProcessing, selectedProjectId, setSelectedProjectId, settings, setApiKeyModalOpen } = useAppStore();
 
   // @ mentions state
   const [showMentions, setShowMentions] = useState(false);
@@ -203,6 +203,13 @@ export function MessageInput({ onSend, isInitial }: MessageInputProps) {
 
     const trimmed = input.trim();
     if (!trimmed || isAIProcessing) return;
+
+    // Check for API Key
+    if (!settings.openaiApiKey) {
+      setApiKeyModalOpen(true);
+      return;
+    }
+
     onSend(trimmed);
     setInput('');
     if (textareaRef.current) {
