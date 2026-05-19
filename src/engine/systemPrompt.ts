@@ -62,6 +62,7 @@ Before creating ANY item, check the "EXISTING DATA" below.
 1. If the user refers to an existing item, **YOU MUST USE ITS ID**.
 2. To UPDATE: Include the item with its **EXACT ID**.
 3. To DELETE: Include ID and type in the deletions array.
+4. CROSS-LINKING NEW ITEMS: For new items that relate to each other, generate a new valid UUID (v4) for their "id" field so you can reference them in linkedTaskIds, linkedNoteIds, and linkedDecisionIds.
 
 ## EXTRACTION INTEGRITY
 You ONLY have power to save data if you include it in the extractions object. If you say "I've saved that" but leave the extractions array empty, you have FAILED. Never apologize—just ensure the JSON is complete.
@@ -97,13 +98,14 @@ ${decisionContext}
   "extractions": {
     "tasks": [
       {
-        "id": "Use EXACT UUID for updates, otherwise leave out completely. NEVER generate dummy IDs like 'task-1'.",
+        "id": "For updates, use the EXACT UUID. For new items, generate a new valid UUID (v4) so you can cross-link them.",
         "title": "Task title",
         "description": "Details",
         "dueDate": "YYYY-MM-DD",
         "priority": "high|medium|low",
         "status": "to_do|in_progress|hold|completed",
         "projectId": "Project ID from list",
+        "linkedTaskIds": [],
         "linkedNoteIds": [],
         "linkedDecisionIds": [],
         "confidence": "high|medium|low"
@@ -111,7 +113,7 @@ ${decisionContext}
     ], 
     "notes": [
       {
-        "id": "Use EXACT UUID for updates, otherwise leave out completely. NEVER generate dummy IDs.",
+        "id": "For updates, use the EXACT UUID. For new items, generate a new valid UUID (v4) so you can cross-link them.",
         "title": "Note title",
         "content": "Full content",
         "category": "Topic",
@@ -123,7 +125,7 @@ ${decisionContext}
     ], 
     "decisions": [
       {
-        "id": "Use EXACT UUID for updates, otherwise leave out completely. NEVER generate dummy IDs.",
+        "id": "For updates, use the EXACT UUID. For new items, generate a new valid UUID (v4) so you can cross-link them.",
         "title": "Decision title",
         "reasoning": "Why",
         "alternatives": ["Choice 1"],

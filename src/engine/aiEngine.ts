@@ -36,11 +36,21 @@ async function callAI(
 ): Promise<string> {
   const userApiKey = useAppStore.getState().settings.openaiApiKey;
 
+  // Merge consecutive messages of the same role (e.g. user/user) to satisfy strict API guidelines
+  const processedMessages: { role: string; content: string }[] = [];
+  for (const msg of messages) {
+    if (processedMessages.length > 0 && processedMessages[processedMessages.length - 1].role === msg.role) {
+      processedMessages[processedMessages.length - 1].content += '\n\n' + msg.content;
+    } else {
+      processedMessages.push({ ...msg });
+    }
+  }
+
   const response = await fetch('/api/chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ 
-      messages, 
+      messages: processedMessages, 
       model, 
       temperature, 
       max_tokens,
@@ -94,7 +104,7 @@ export async function sendMessageToAI(
   });
 
   const messages = [
-    { role: 'user', content: `[SYSTEM INSTRUCTION]\n${systemPrompt}` },
+    { role: 'system', content: systemPrompt },
     ...conversationHistory.slice(-20),
     { role: 'user', content: userMessage },
     { role: 'user', content: '[REMINDER] Respond ONLY with the JSON object. Ensure extractions are populated.' },
@@ -121,6 +131,7 @@ export async function sendMessageToAI(
           dueDate: t.dueDate || t.due_date || null,
           projectId: t.projectId || t.project_id || state.selectedProjectId || null,
           tags: t.tags || [],
+          linkedTaskIds: t.linkedTaskIds || t.linked_task_ids || [],
           linkedNoteIds: t.linkedNoteIds || t.linked_note_ids || [],
           linkedDecisionIds: t.linkedDecisionIds || t.linked_decision_ids || [],
           sourceMessageId: '',
@@ -193,8 +204,8 @@ export async function generateWeeklyReflection(
 ): Promise<string> {
   const messages = [
     {
-      role: 'user',
-      content: '[SYSTEM]\nYou are a thoughtful work coach. Generate a structured weekly reflection based on the user\'s work data. Include: summary paragraph, wins, challenges, learnings, and improvement suggestions. Write warmly and insightfully. Respond in plain text, not JSON.',
+      role: 'system',
+      content: 'You are a thoughtful work coach. Generate a structured weekly reflection based on the user\'s work data. Include: summary paragraph, wins, challenges, learnings, and improvement suggestions. Write warmly and insightfully. Respond in plain text, not JSON.',
     },
     { role: 'user', content: context },
   ];
@@ -207,8 +218,8 @@ export async function generatePortfolioBullet(
 ): Promise<string> {
   const messages = [
     {
-      role: 'user',
-      content: '[SYSTEM]\nYou are a career writing expert. Generate a single strong, results-oriented resume bullet point from the work context provided. Use action verbs, quantify impact where possible, and keep it to 1-2 sentences. Respond with just the bullet point text.',
+      role: 'system',
+      content: 'You are a career writing expert. Generate a single strong, results-oriented resume bullet point from the work context provided. Use action verbs, quantify impact where possible, and keep it to 1-2 sentences. Respond with just the bullet point text.',
     },
     { role: 'user', content: achievementContext },
   ];
@@ -232,7 +243,7 @@ If nothing matches, return an empty array [].
 Example: ["id1", "id2"]`;
 
   const messages = [
-    { role: 'user', content: systemPrompt },
+    { role: 'system', content: systemPrompt },
     { role: 'user', content: `WORKSPACE DATA:\n${JSON.stringify(contextData)}\n\nQUERY:\n${query}` }
   ];
 
@@ -276,7 +287,7 @@ ${formatInstructions}
 If a field is not mentioned, use a reasonable default or null. Do not include any other text, reasoning, or markdown formatting outside the JSON block.`;
 
   const messages = [
-    { role: 'user', content: systemPrompt },
+    { role: 'system', content: systemPrompt },
     { role: 'user', content: text }
   ];
 
