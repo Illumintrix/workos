@@ -27,7 +27,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         'X-Title': 'Work Intelligence OS',
       },
       body: JSON.stringify({
-        model: model || 'google/gemma-3-27b-it:free',
+        model: model || 'google/gemma-4-31b-it:free',
         messages,
         max_tokens: max_tokens || 4096,
         temperature: temperature ?? 0.7,

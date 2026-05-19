@@ -2,7 +2,7 @@
 // Multi-model strategy via OpenRouter (OpenAI-compatible)
 //
 // Models:
-//   Gemma 3 27B IT   — primary conversation + extraction (free)
+//   Gemma 4 31B IT   — primary conversation + extraction (free)
 //   GPT-OSS 120B     — quality writing (reflections, portfolio) (free)
 //   Nemotron 3 Nano  — lightweight classification (free)
 //
@@ -18,7 +18,7 @@ import type { AIExtractions } from '../store/types';
 
 export const MODELS = {
   /** Primary: real-time conversation + structured extraction */
-  PRIMARY: 'google/gemma-3-27b-it:free',
+  PRIMARY: 'google/gemma-4-31b-it:free',
   /** Quality: weekly reflections, monthly summaries, portfolio bullets */
   QUALITY: 'openai/gpt-oss-120b:free',
   /** Fast: lightweight classification checks */
