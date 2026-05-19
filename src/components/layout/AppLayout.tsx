@@ -4,7 +4,7 @@ import { RightPanel } from './RightPanel';
 import { AmbientBackground } from '../AmbientBackground';
 import { useAppStore } from '../../store';
 import { Menu } from 'lucide-react';
-import { SearchModal } from '../search/SearchModal';
+import { CommandPalette } from '../search/CommandPalette';
 import { ChatBrowser } from '../conversation/ChatBrowser';
 import { ApiKeyPromptModal } from '../settings/ApiKeyPromptModal';
 
@@ -14,7 +14,7 @@ export function AppLayout() {
   return (
     <div className="relative min-h-screen text-white antialiased font-sans bg-[#050505]">
       <AmbientBackground />
-      <SearchModal />
+      <CommandPalette />
       <ApiKeyPromptModal />
       <div className="relative z-10 flex h-screen overflow-hidden">
         {/* Zone 1: Left Sidebar */}

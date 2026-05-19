@@ -614,17 +614,6 @@ export function MessageInput({ onSend, isInitial }: MessageInputProps) {
           <span className="text-xs text-red-400/70 font-light">Listening — speak naturally, then click send or stop</span>
         </div>
       )}
-
-      {isAIProcessing && (
-        <div className="flex items-center gap-2 mt-3 ml-2 animate-in fade-in duration-300">
-          <div className="flex gap-1">
-            <div className="w-1.5 h-1.5 rounded-full bg-amber-400/60 animate-bounce" style={{ animationDelay: '0ms' }} />
-            <div className="w-1.5 h-1.5 rounded-full bg-amber-400/60 animate-bounce" style={{ animationDelay: '150ms' }} />
-            <div className="w-1.5 h-1.5 rounded-full bg-amber-400/60 animate-bounce" style={{ animationDelay: '300ms' }} />
-          </div>
-          <span className="text-xs text-white/40 font-light">Processing your message...</span>
-        </div>
-      )}
     </div>
   );
 }

@@ -12,6 +12,7 @@ import { DecisionsPage } from './pages/DecisionsPage';
 import { ReflectionsPage } from './pages/ReflectionsPage';
 import { TimelinePage } from './pages/TimelinePage';
 import { PortfolioPage } from './pages/PortfolioPage';
+import { GraphPage } from './pages/GraphPage';
 import { LandingPage } from './pages/LandingPage';
 import { AuthPage } from './pages/AuthPage';
 import { ProjectsPage } from './pages/ProjectsPage';
@@ -105,6 +106,7 @@ function App() {
           <Route path="/timeline" element={<TimelinePage />} />
           <Route path="/portfolio" element={<PortfolioPage />} />
           <Route path="/projects" element={<ProjectsPage />} />
+          <Route path="/graph" element={<GraphPage />} />
           <Route path="*" element={<Navigate to="/app" replace />} />
         </Route>
       </Routes>

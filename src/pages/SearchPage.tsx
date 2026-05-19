@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Search as SearchIcon, Loader2, CheckSquare, FileText, GitBranch, RefreshCw } from 'lucide-react';
 import { useAppStore } from '../store';
 import { performSemanticSearch } from '../engine/aiEngine';
+import { supabase } from '../lib/supabase';
 
 export function SearchPage() {
   const { tasks, notes, decisions, reflections } = useAppStore();
@@ -23,23 +24,63 @@ export function SearchPage() {
     ];
 
     try {
-      const matchedIds = await performSemanticSearch(query, contextData);
-      
-      const found: { id: string; type: string; item: any }[] = [];
-      
-      matchedIds.forEach(id => {
-        const task = tasks.find(t => t.id === id);
-        if (task) found.push({ id, type: 'task', item: task });
-        
-        const note = notes.find(n => n.id === id);
-        if (note) found.push({ id, type: 'note', item: note });
-        
-        const decision = decisions.find(d => d.id === id);
-        if (decision) found.push({ id, type: 'decision', item: decision });
+      let found: { id: string; type: string; item: any }[] = [];
+      const user = useAppStore.getState().user;
+      const apiKey = useAppStore.getState().settings.openaiApiKey;
 
-        const reflection = reflections.find(r => r.id === id);
-        if (reflection) found.push({ id, type: 'reflection', item: reflection });
-      });
+      if (user && apiKey) {
+        // Generate embedding for query
+        const res = await fetch('/api/embeddings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ input: query, apiKey })
+        });
+        
+        if (res.ok) {
+          const { embedding } = await res.json();
+          // Call Supabase RPC
+          const { data, error } = await supabase.rpc('search_workspace', {
+            query_embedding: embedding,
+            match_threshold: 0.5,
+            match_count: 20,
+            user_id_param: user.id
+          });
+          
+          if (!error && data) {
+            data.forEach((match: any) => {
+              if (match.type === 'task') {
+                const item = tasks.find(t => t.id === match.id);
+                if (item) found.push({ id: match.id, type: 'task', item });
+              } else if (match.type === 'note') {
+                const item = notes.find(n => n.id === match.id);
+                if (item) found.push({ id: match.id, type: 'note', item });
+              } else if (match.type === 'decision') {
+                const item = decisions.find(d => d.id === match.id);
+                if (item) found.push({ id: match.id, type: 'decision', item });
+              }
+            });
+          }
+        }
+      }
+
+      // Fallback to LLM semantic search if pgvector didn't run or found nothing
+      if (found.length === 0) {
+        const matchedIds = await performSemanticSearch(query, contextData);
+        
+        matchedIds.forEach(id => {
+          const task = tasks.find(t => t.id === id);
+          if (task) found.push({ id, type: 'task', item: task });
+          
+          const note = notes.find(n => n.id === id);
+          if (note) found.push({ id, type: 'note', item: note });
+          
+          const decision = decisions.find(d => d.id === id);
+          if (decision) found.push({ id, type: 'decision', item: decision });
+
+          const reflection = reflections.find(r => r.id === id);
+          if (reflection) found.push({ id, type: 'reflection', item: reflection });
+        });
+      }
 
       setResults(found);
     } catch (e) {

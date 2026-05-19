@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { format } from 'date-fns';
 import { useAppStore } from '../store';
 import { ConversationArea } from '../components/conversation/ConversationArea';
@@ -81,6 +82,22 @@ function ContextSummary() {
 export function TodayPage() {
   const { settings } = useAppStore();
   const today = new Date();
+
+  useEffect(() => {
+    const todayStr = new Date().toISOString().split('T')[0];
+    const hour = new Date().getHours();
+    
+    // Trigger if it's morning and briefing hasn't run today
+    if (hour < 12 && settings.lastBriefingDate !== todayStr) {
+      useAppStore.setState(state => ({
+        settings: { ...state.settings, lastBriefingDate: todayStr }
+      }));
+      
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent('trigger-morning-briefing'));
+      }, 500);
+    }
+  }, [settings.lastBriefingDate]);
 
   return (
     <div className="flex-1 flex flex-col min-h-0 overflow-hidden">

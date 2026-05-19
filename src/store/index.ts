@@ -4,6 +4,23 @@ import type { Task, Note, Decision, Reflection, TimelineEvent, Message, Portfoli
 import { v4 as uuidv4 } from 'uuid';
 import { supabase } from '../lib/supabase';
 
+async function generateEmbedding(text: string, apiKey: string): Promise<number[] | null> {
+  if (!text || !apiKey) return null;
+  try {
+    const res = await fetch('/api/embeddings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ input: text, apiKey })
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.embedding;
+  } catch (err) {
+    console.error('Failed to generate embedding', err);
+    return null;
+  }
+}
+
 // ─── App Store ───────────────────────────────────────────────────────────────
 
 interface AppState {
@@ -119,6 +136,7 @@ const defaultSettings: UserSettings = {
   timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
   hasCompletedOnboarding: false,
   openaiApiKey: '',
+  lastBriefingDate: null,
 };
 
 export const useAppStore = create<AppState>()(
@@ -292,7 +310,8 @@ export const useAppStore = create<AppState>()(
               role: settingsRes.data.role || '',
               timezone: settingsRes.data.timezone || defaultSettings.timezone,
               hasCompletedOnboarding: settingsRes.data.has_completed_onboarding || false,
-              openaiApiKey: settingsRes.data.openai_api_key || ''
+              openaiApiKey: settingsRes.data.openai_api_key || '',
+              lastBriefingDate: settingsRes.data.last_briefing_date || null
             } : defaultSettings,
             projects: (projectsRes.data || []).map(p => ({
               id: p.id,
@@ -391,6 +410,9 @@ export const useAppStore = create<AppState>()(
           timeline: [...state.timeline, timelineEvent],
         }));
 
+        const embeddingText = `${task.title} ${task.description || ''}`.trim();
+        const embedding = await generateEmbedding(embeddingText, get().settings.openaiApiKey);
+
         const { error } = await supabase.from('tasks').insert([{
           id: task.id,
           user_id: get().user?.id,
@@ -407,7 +429,8 @@ export const useAppStore = create<AppState>()(
           source_message_id: task.sourceMessageId,
           ai_confidence: task.aiConfidence,
           created_at: task.createdAt,
-          updated_at: task.updatedAt
+          updated_at: task.updatedAt,
+          embedding: embedding || null
         }]);
 
         if (error) console.error('Error adding task to Supabase:', error);
@@ -467,6 +490,9 @@ export const useAppStore = create<AppState>()(
           timeline: [...state.timeline, timelineEvent],
         }));
 
+        const embeddingText = `${note.title} ${note.content || ''}`.trim();
+        const embedding = await generateEmbedding(embeddingText, get().settings.openaiApiKey);
+
         const { error } = await supabase.from('notes').insert([{
           id: note.id,
           user_id: get().user?.id,
@@ -481,7 +507,8 @@ export const useAppStore = create<AppState>()(
           source_message_id: note.sourceMessageId,
           ai_confidence: note.aiConfidence,
           created_at: note.createdAt,
-          updated_at: note.updatedAt
+          updated_at: note.updatedAt,
+          embedding: embedding || null
         }]);
 
         if (error) console.error('Error adding note to Supabase:', error);
@@ -539,6 +566,9 @@ export const useAppStore = create<AppState>()(
           timeline: [...state.timeline, timelineEvent],
         }));
 
+        const embeddingText = `${decision.title} ${decision.reasoning || ''}`.trim();
+        const embedding = await generateEmbedding(embeddingText, get().settings.openaiApiKey);
+
         const { error } = await supabase.from('decisions').insert([{
           id: decision.id,
           user_id: get().user?.id,
@@ -555,7 +585,8 @@ export const useAppStore = create<AppState>()(
           source_message_id: decision.sourceMessageId,
           ai_confidence: decision.aiConfidence,
           created_at: decision.createdAt,
-          updated_at: decision.updatedAt
+          updated_at: decision.updatedAt,
+          embedding: embedding || null
         }]);
 
         if (error) console.error('Error adding decision to Supabase:', error);

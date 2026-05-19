@@ -31,6 +31,7 @@ const navItems = [
   { path: '/reflections', label: 'Reflections', icon: RefreshCw },
   { path: '/timeline', label: 'Timeline', icon: Clock },
   { path: '/portfolio', label: 'Portfolio', icon: Briefcase },
+  { path: '/graph', label: 'Graph', icon: GitBranch },
 ];
 
 export function Sidebar() {
@@ -50,14 +51,6 @@ export function Sidebar() {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        setSearchModalOpen(true);
-      }
-      if (e.key === '/' && !['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement).tagName)) {
-        e.preventDefault();
-        setSearchModalOpen(true);
-      }
       if ((e.metaKey || e.ctrlKey) && e.key === '.') {
         e.preventDefault();
         toggleSidebar();
@@ -65,7 +58,7 @@ export function Sidebar() {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [setSearchModalOpen, toggleSidebar]);
+  }, [toggleSidebar]);
 
   const [isLogoHovered, setIsLogoHovered] = useState(false);
   const [isCollapseHovered, setIsCollapseHovered] = useState(false);

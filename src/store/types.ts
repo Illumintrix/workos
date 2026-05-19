@@ -126,6 +126,7 @@ export interface UserSettings {
   timezone: string;
   hasCompletedOnboarding: boolean;
   openaiApiKey: string;
+  lastBriefingDate: string | null;
 }
 
 export interface Project {

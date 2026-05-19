@@ -80,6 +80,71 @@ export default defineConfig(({ mode }) => {
               res.end(JSON.stringify({ error: error.message || 'Internal server error' }));
             }
           });
+          server.middlewares.use('/api/embeddings', async (req: IncomingMessage, res: ServerResponse) => {
+            if (req.method !== 'POST') {
+              res.statusCode = 405;
+              res.end(JSON.stringify({ error: 'Method not allowed' }));
+              return;
+            }
+
+            let body = '';
+            for await (const chunk of req) {
+              body += chunk;
+            }
+
+            try {
+              const { input, apiKey } = JSON.parse(body);
+              
+              if (!input) {
+                res.statusCode = 400;
+                res.end(JSON.stringify({ error: 'Input text is required' }));
+                return;
+              }
+
+              const systemApiKey = env.VITE_OPENAI_API_KEY;
+              const activeApiKey = (apiKey || systemApiKey || '').trim();
+
+              if (!activeApiKey || activeApiKey === 'undefined') {
+                res.statusCode = 401;
+                res.setHeader('Content-Type', 'application/json');
+                res.end(JSON.stringify({ error: 'OpenAI API key not configured.' }));
+                return;
+              }
+
+              const apiResponse = await fetch('https://api.openai.com/v1/embeddings', {
+                method: 'POST',
+                headers: {
+                  'Authorization': `Bearer ${activeApiKey}`,
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  input,
+                  model: 'text-embedding-3-small',
+                }),
+              });
+
+              if (!apiResponse.ok) {
+                const errorText = await apiResponse.text();
+                console.error('OpenAI API error:', apiResponse.status, errorText);
+                res.statusCode = apiResponse.status;
+                res.setHeader('Content-Type', 'application/json');
+                res.end(JSON.stringify({ error: `OpenAI API error: ${apiResponse.status}`, details: errorText }));
+                return;
+              }
+
+              const data = await apiResponse.json() as any;
+              const embedding = data.data?.[0]?.embedding;
+
+              res.statusCode = 200;
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify({ embedding }));
+            } catch (error: any) {
+              console.error('Embedding proxy error:', error);
+              res.statusCode = 500;
+              res.setHeader('Content-Type', 'application/json');
+              res.end(JSON.stringify({ error: error.message || 'Internal server error' }));
+            }
+          });
         },
       },
     ],
